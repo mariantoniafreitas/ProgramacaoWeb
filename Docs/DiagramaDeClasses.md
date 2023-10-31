@@ -7,4 +7,4 @@
 ## Diagrama de classes
 
 #### *Versão 0.1*
-![diagrama_de_classes](./Imgs/DiagramaDisco.png)
+![diagrama_de_classes](./Imagens/DiagramaDisco.jpg)
