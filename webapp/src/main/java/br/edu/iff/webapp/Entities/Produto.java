@@ -2,10 +2,12 @@ package br.edu.iff.webapp.Entities;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+@Entity
 public class Produto implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,6 +32,10 @@ public class Produto implements Serializable {
 
     public void setValor(double valor) {
         this.valor = valor;
+    }
+    
+    public Produto() {
+    	
     }
 
 }

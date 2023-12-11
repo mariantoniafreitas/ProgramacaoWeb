@@ -10,18 +10,17 @@ import jakarta.persistence.Id;
 
 @Entity
 public class Cargo implements Serializable {
+	
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "col_nome")
     private String nome;
 
     private double salario;
 
-    @Column(unique = true, length = 30)
     private String descricao;
 
     private int nivelAcesso;
@@ -65,5 +64,7 @@ public class Cargo implements Serializable {
     public void setSalario(double salario) {
         this.salario = salario;
     }
-
+     public Cargo() {
+    	 
+     }
 }

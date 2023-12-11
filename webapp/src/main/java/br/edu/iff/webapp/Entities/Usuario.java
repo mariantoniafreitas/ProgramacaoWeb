@@ -2,10 +2,12 @@ package br.edu.iff.webapp.Entities;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+@Entity
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,6 +42,10 @@ public class Usuario implements Serializable {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+    
+    public Usuario() {
+    	
     }
 
 }

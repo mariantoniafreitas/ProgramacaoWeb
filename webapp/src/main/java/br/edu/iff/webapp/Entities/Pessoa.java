@@ -2,15 +2,13 @@ package br.edu.iff.webapp.Entities;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MappedSuperclass;
 
-@MappedSuperclass
-public abstract class Pessoa implements Serializable {
+@Entity
+public class Pessoa implements Serializable {
 
     protected static final long serialVersionUID = 1L;
 
@@ -30,9 +28,6 @@ public abstract class Pessoa implements Serializable {
 
     private String dataNascimento;
 
-    @ManyToOne()
-    @JoinColumn(name = "fk_pessoa")
-    private Usuario usuario;
 
     public Long getId() {
         return id;
@@ -88,5 +83,9 @@ public abstract class Pessoa implements Serializable {
 
     public void setDataNascimento(String dataNascimento) {
         this.dataNascimento = dataNascimento;
+    }
+    
+    public Pessoa() {
+    	
     }
 }

@@ -1,14 +1,22 @@
 package br.edu.iff.webapp.Entities;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 
 @Entity
-public class Funcionario extends Pessoa {
+public class Funcionario implements Serializable {
 
-    @ManyToOne()
-    @JoinColumn(name = "fk_cargo")
+	private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Cargo cargo;
 
     public Cargo getCargo() {
@@ -17,6 +25,10 @@ public class Funcionario extends Pessoa {
 
     public void setCargo(Cargo cargo) {
         this.cargo = cargo;
+    }
+    
+    public Funcionario() {
+    	
     }
 
 }

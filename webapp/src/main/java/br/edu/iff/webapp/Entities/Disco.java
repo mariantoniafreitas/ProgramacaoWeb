@@ -2,10 +2,12 @@ package br.edu.iff.webapp.Entities;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+@Entity
 public class Disco implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -80,6 +82,10 @@ public class Disco implements Serializable {
 
     public void setTotalMusicas(int totalMusicas) {
         this.totalMusicas = totalMusicas;
+    }
+    
+    public Disco() {
+    	
     }
 
 }

@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 
 @Entity
 public class Cliente implements Serializable {
+	
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -31,6 +32,10 @@ public class Cliente implements Serializable {
 
     public void setSaldoDisponivel(double saldoDisponivel) {
         this.saldoDisponivel = saldoDisponivel;
+    }
+    
+    public Cliente() {
+    	
     }
 
 }

@@ -2,9 +2,12 @@ package br.edu.iff.webapp.Entities;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
+@Entity
 
 public class Pedido implements Serializable {
 
@@ -70,6 +73,10 @@ public class Pedido implements Serializable {
 
     public void setCpfCliente(String cpfCliente) {
         this.cpfCliente = cpfCliente;
+    }
+    
+    public Pedido() {
+    	
     }
 
 }
