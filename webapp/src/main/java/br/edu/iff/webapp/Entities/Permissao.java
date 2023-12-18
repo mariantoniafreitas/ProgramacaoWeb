@@ -1,11 +1,13 @@
 package br.edu.iff.webapp.Entities;
 
 import java.io.Serializable;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Permissao implements Serializable {
@@ -16,14 +18,13 @@ public class Permissao implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToMany(mappedBy = "permissoes")
+	private List<Usuario> usuarios;
+    
     private boolean acesso;
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public boolean getAcesso() {
@@ -32,6 +33,10 @@ public class Permissao implements Serializable {
 
     public void setAcesso(boolean acesso) {
         this.acesso = acesso;
+    }
+    
+    public Permissao(boolean acesso) {
+    	this.acesso = acesso;
     }
     
     public Permissao() {
