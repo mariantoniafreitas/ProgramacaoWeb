@@ -27,8 +27,8 @@ public class Frete implements Serializable {
     @PositiveOrZero(message="Tem que ser maior ou igual a 0")
     private double valor;
     
-    @OneToOne(mappedBy="pedido")
-	private Pedido pedido;
+    @OneToOne(mappedBy="frete")
+  	private Pedido pedido;
 
     public Long getId() {
         return id;
