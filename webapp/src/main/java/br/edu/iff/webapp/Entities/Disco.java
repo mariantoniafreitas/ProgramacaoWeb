@@ -1,14 +1,17 @@
 package br.edu.iff.webapp.Entities;
 
-import java.io.Serializable;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 @Entity
-public class Disco implements Serializable {
+public class Disco extends Produto {
 
     private static final long serialVersionUID = 1L;
 
@@ -16,24 +19,40 @@ public class Disco implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message="Não pode ser em branco ou nulo")
+	@Size(min=1,max=60,message="Tem que ter entre 1 e 60 caractéres")
+	@Column(unique=true, length = 60)
     private String titulo;
 
+    @Size(min=1,max=60,message="Tem que ter entre 1 e 60 caractéres")
+	@Column(length = 60)
     private String interprete;
 
+    @Size(min=1,max=20,message="Tem que ter entre 1 e 20 caractéres")
+	@Column(length = 20)
     private String genero;
 
+    @Size(min=1,max=20,message="Tem que ter entre 1 e 20 caractéres")
+	@Column(length = 20)
     private String gravadora;
 
+    @Positive(message="Tem que ser maior que 0")
     private double tempoDuracao;
 
+    @Positive(message="Tem que ser maior que 0")
     private int totalMusicas;
 
+    public Disco(double valor, String titulo, String interprete, String genero, String gravadora, double tempoDuracao, int totalMusicas) {
+    	super(valor);
+    	this.titulo = titulo;
+    	this.interprete = interprete;
+    	this.genero = genero;
+    	this.gravadora = gravadora;
+    	this.tempoDuracao = tempoDuracao;
+    	this.totalMusicas = totalMusicas;
+    }
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public double getTempoDuracao() {
