@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.edu.iff.webapp.Entities.Cargo;
@@ -22,22 +24,25 @@ public class CargoController {
 	@Autowired
 	public CargoService cargoService;
 
-    @PostMapping("")
-    @ResponseBody
-    public String adicionarCargo(String descricao, double salario, int nivelAcesso) {
-    	return cargoService.adicionarCargo(new Cargo(descricao, salario, nivelAcesso));
-    }
-
-    @PutMapping("/{id}")
-    @ResponseBody
-    public String putCargo(@PathVariable("id") Long id, double salario, int nivelAcesso) {
-    	Cargo cBusca = cargoService.getCargoId(id);
-		if(cBusca==null) {			
-			return "Cargo não achado";
-		}else {
-			return cargoService.atualizarCargo(salario, cBusca.getDescricao(), nivelAcesso);
-		}
+	@PostMapping("")
+	@ResponseBody
+	public String adicionarCargo(@RequestBody Cargo cargoRequest) {
+	    // Lógica para adicionar o cargo usando os dados de cargoRequest
+	    return cargoService.adicionarCargo(new Cargo(cargoRequest.getDescricao(), cargoRequest.getSalario(), cargoRequest.getNivelAcesso()));
 	}
+
+
+	@PutMapping("/{id}")
+	@ResponseBody
+	public String putCargo(@PathVariable("id") Long id, @RequestBody Cargo cargoRequest) {
+	    Cargo cBusca = cargoService.getCargoId(id);
+	    if (cBusca == null) {            
+	        return "Cargo não achado";
+	    } else {
+	    	return cargoService.atualizarCargo(cargoRequest.getSalario(), cargoRequest.getDescricao(), cargoRequest.getNivelAcesso());
+	    }
+	}
+
 
     @DeleteMapping("/{id}")
     @ResponseBody

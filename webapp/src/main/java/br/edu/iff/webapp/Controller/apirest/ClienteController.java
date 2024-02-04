@@ -24,8 +24,8 @@ public class ClienteController {
 
     @PostMapping("")
     @ResponseBody
-    public String addCliente(String nome, String email, String cpf, String senha, String telefone, String endereco, String dataNascimento) throws Exception {			
-		return clienteService.addCliente(new Cliente(nome, email, cpf, senha, telefone, endereco, dataNascimento));
+    public String addCliente(String nome, String email, String cpf, String senha, String telefone, String endereco, String dataNascimento, double saldoDisponivel) throws Exception {			
+		return clienteService.addCliente(new Cliente(nome, email, cpf, senha, telefone, endereco, dataNascimento, saldoDisponivel));
 	}
     @PutMapping("/{id}")
     @ResponseBody

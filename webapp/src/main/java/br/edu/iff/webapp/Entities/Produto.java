@@ -16,7 +16,7 @@ import jakarta.validation.constraints.Positive;
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class Produto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    protected static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,7 @@ public abstract class Produto implements Serializable {
     	super();
     	this.valor = valor;
     }
+    
     public Long getId() {
         return id;
     }

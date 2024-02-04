@@ -19,9 +19,10 @@ public class Cliente extends Pessoa{
     @Positive(message="Tem que ser maior que 0")
     private double saldoDisponivel;
 
-    public Cliente(String nome, String email, String cpf, String tel, String senha, String endereco, String dataNascimento) {
+    public Cliente(String nome, String email, String cpf, String tel, String senha, String endereco, String dataNascimento, double saldoDisponivel) {
     	super(nome, email, cpf, tel, senha, endereco, dataNascimento);
     	this.pedido = new ArrayList<>();
+    	this.saldoDisponivel = saldoDisponivel;
     }
     
     public Cliente() {
