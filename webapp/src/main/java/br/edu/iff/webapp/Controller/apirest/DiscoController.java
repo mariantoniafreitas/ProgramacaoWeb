@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,8 +25,8 @@ public class DiscoController {
 
     @PostMapping("")
     @ResponseBody
-    public String addDisco(double valor, String titulo, String interprete, String genero, String gravadora, double tempoDuracao, int totalMusicas) {
-        return discoService.addDisco(new Disco(valor, titulo, interprete, genero, gravadora,tempoDuracao, totalMusicas));
+    public String addDisco(@RequestBody Disco disco) {
+        return discoService.addDisco(new Disco(disco.getValor(), disco.getTitulo(), disco.getInterprete(), disco.getGenero(), disco.getGravadora(),disco.getTempoDuracao(), disco.getTotalMusicas()));
     }
 
     @PutMapping("/{id}")

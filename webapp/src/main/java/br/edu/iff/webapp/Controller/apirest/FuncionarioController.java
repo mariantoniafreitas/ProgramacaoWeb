@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,8 +25,8 @@ public class FuncionarioController {
 
 	@PostMapping("")
 	@ResponseBody
-	public String addFuncionario(String nome, String email, String cpf, String telefone, String senha, String endereco, String dataNascimento, String descricao) throws Exception {			
-		return funcionarioService.addFuncionario(new Funcionario(nome, email, cpf, telefone, senha, endereco, dataNascimento), descricao);
+	public String addFuncionario(@RequestBody Funcionario funcionario, String descricao) throws Exception {			
+		return funcionarioService.addFuncionario(new Funcionario(funcionario.getNome(), funcionario.getEmail(), funcionario.getEmail(), funcionario.getTel(), funcionario.getSenha(), funcionario.getEndereco(), funcionario.getDataNascimento()), descricao);
 	}
 
 	@PutMapping("/{id}")

@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.edu.iff.webapp.Entities.Cliente;
@@ -21,12 +23,14 @@ public class ClienteController {
 	
 	@Autowired
 	public ClienteService clienteService;
+	@PostMapping("")
+	@ResponseBody
+	public String addCliente(@RequestBody Cliente cliente) throws Exception {
 
-    @PostMapping("")
-    @ResponseBody
-    public String addCliente(String nome, String email, String cpf, String senha, String telefone, String endereco, String dataNascimento, double saldoDisponivel) throws Exception {			
-		return clienteService.addCliente(new Cliente(nome, email, cpf, senha, telefone, endereco, dataNascimento, saldoDisponivel));
+	    return clienteService.addCliente(new Cliente(cliente.getNome(), cliente.getEmail(), cliente.getCpf(), cliente.getSenha(), cliente.getTel(), cliente.getEndereco(), cliente.getDataNascimento(), cliente.getSaldoDisponivel()));
 	}
+
+
     @PutMapping("/{id}")
     @ResponseBody
     public String atualizarCliente(@PathVariable("id") Long id, String nome, String email, String senha) {

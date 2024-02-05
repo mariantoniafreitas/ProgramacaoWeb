@@ -15,5 +15,5 @@ public interface CargoRepository extends JpaRepository<Cargo, Long> {
 	Cargo BuscarPeloId(Long id);
 	
 	@Query(value="SELECT COUNT(*) FROM FUNCIONARIO JOIN CARGO WHERE DESCRICAO = ?1 AND FK_CARGO = CARGO.ID", nativeQuery = true)
-	int BuscarFuncionariosPeloCargo(String funcao);
+	int BuscarFuncionariosPeloCargo(String descricao);
 }

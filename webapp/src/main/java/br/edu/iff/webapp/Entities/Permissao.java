@@ -17,12 +17,12 @@ public class Permissao implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String acesso;
 
     @ManyToMany(mappedBy = "permissoes")
 	private List<Usuario> usuarios;
     
-    private String acesso;
-
+    
     public Long getId() {
         return id;
     }

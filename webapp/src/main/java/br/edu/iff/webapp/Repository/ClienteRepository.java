@@ -14,6 +14,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 	@Query(value="SELECT * FROM CLIENTE WHERE ID = ?1", nativeQuery = true)
 	Cliente BuscarPeloId(Long id);
 	
-	@Query(value="SELECT CLIENTE.* FROM CLIENTE, COMPRA WHERE ID_CLIENTE=CLIENTE.ID AND COMPRA.ID = ?1", nativeQuery = true)
+	@Query(value="SELECT CLIENTE.* FROM CLIENTE, PEDIDO WHERE ID_CLIENTE=CLIENTE.ID AND PEDIDO.ID = ?1", nativeQuery = true)
 	Cliente BuscarPeloIdCompra(Long id);
 }

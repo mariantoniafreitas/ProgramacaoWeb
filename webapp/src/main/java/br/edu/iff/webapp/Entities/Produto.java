@@ -13,13 +13,13 @@ import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Positive;
 
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public abstract class Produto implements Serializable {
 
     protected static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
     @Positive(message="Tem que ser maior que 0")
