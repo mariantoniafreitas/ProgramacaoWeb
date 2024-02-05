@@ -1,6 +1,7 @@
 package br.edu.iff.webapp.Entities;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -12,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotBlank;
@@ -21,17 +21,12 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
-
 public class Pedido implements Serializable {
-
+	// = Compra
     private static final long serialVersionUID = 1L;
-
-    @OneToOne
-	@JoinColumn(name="fk_frete")
-	private Frete frete;
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @PastOrPresent(message="Não pode ser no futuro")
@@ -51,8 +46,8 @@ public class Pedido implements Serializable {
     private String cpfCliente;
     
     @ManyToMany
-	@JoinTable(name = "compra_produto",
-				joinColumns = @JoinColumn(name = "fk_compra"),
+	@JoinTable(name = "pedido_produto",
+				joinColumns = @JoinColumn(name = "fk_pedido"),
 				inverseJoinColumns = @JoinColumn(name = "fk_produto"))
 	private List<Produto> produto;
     
@@ -61,6 +56,10 @@ public class Pedido implements Serializable {
     	this.qtdProdutos = 0;
     	this.produto =  new ArrayList<>();
     	this.cpfCliente = cpfCliente;
+    }
+    
+    public Pedido() {
+    	
     }
 
     public Long getId() {
@@ -83,15 +82,6 @@ public class Pedido implements Serializable {
         this.totalPedido = totalPedido;
     }
 
-    public boolean getConcluido() {
-        return concluido;
-    }
-
-    public void setConcluido(boolean concluido) {
-        this.concluido = true;
-        this.dataHora = Calendar.getInstance();
-    }
-
     public String getCpfCliente() {
         return cpfCliente;
     }
@@ -112,8 +102,22 @@ public class Pedido implements Serializable {
 		this.totalPedido-=produto.getValor();
 	}
     
-    public Pedido() {
-    	
-    }
+    public void concluirPedido() {
+		this.concluido = true;
+		this.dataHora = Calendar.getInstance();
+	}
+	
+	public boolean isConcluido() {
+		return this.concluido;
+	}
+	
+	public String getDataHora() {
+		if (dataHora != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            return dateFormat.format(dataHora.getTime());
+        } else {
+            return "";
+        }
+	}
 
 }

@@ -1,6 +1,7 @@
 package br.edu.iff.webapp.Entities;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Positive;
 
 @Entity
-public class Cliente extends Pessoa{
+public class Cliente extends Pessoa implements Serializable {
 
     @OneToMany
 	@JoinColumn(name="id_cliente")
@@ -19,20 +20,22 @@ public class Cliente extends Pessoa{
     @Positive(message="Tem que ser maior que 0")
     private double saldoDisponivel;
 
-    public Cliente(String nome, String email, String cpf, String tel, String endereco, String dataNascimento) {
-    	super(nome, email, cpf, tel, endereco, dataNascimento);
+    public Cliente(String nome, String email, String cpf, String tel, String senha, String endereco, String dataNascimento, double saldoDisponivel) {
+    	super(nome, email, cpf, tel, senha, endereco, dataNascimento);
     	this.pedido = new ArrayList<>();
+    	this.saldoDisponivel = saldoDisponivel;
     }
+    
+    public Cliente() {
+    	
+    }
+    
     public double getSaldoDisponivel() {
         return saldoDisponivel;
     }
 
     public void setSaldoDisponivel(double saldoDisponivel) {
         this.saldoDisponivel = saldoDisponivel;
-    }
-    
-    public Cliente() {
-    	
     }
     
     public void addPedido(Pedido pedido) {
