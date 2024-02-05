@@ -17,25 +17,25 @@ public class Permissao implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String acesso;
 
     @ManyToMany(mappedBy = "permissoes")
 	private List<Usuario> usuarios;
     
-    private boolean acesso;
-
+    
     public Long getId() {
         return id;
     }
 
-    public boolean getAcesso() {
+    public String getAcesso() {
         return acesso;
     }
 
-    public void setAcesso(boolean acesso) {
+    public void setAcesso(String acesso) {
         this.acesso = acesso;
     }
     
-    public Permissao(boolean acesso) {
+    public Permissao(String acesso) {
     	this.acesso = acesso;
     }
     
