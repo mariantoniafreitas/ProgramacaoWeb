@@ -1,6 +1,7 @@
 package br.edu.iff.webapp.Entities;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Positive;
 
 @Entity
-public class Cliente extends Pessoa{
+public class Cliente extends Pessoa implements Serializable {
 
     @OneToMany
 	@JoinColumn(name="id_cliente")

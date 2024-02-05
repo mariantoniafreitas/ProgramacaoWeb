@@ -21,9 +21,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
-
 public class Pedido implements Serializable {
-
+	// = Compra
     private static final long serialVersionUID = 1L;
     
     @Id

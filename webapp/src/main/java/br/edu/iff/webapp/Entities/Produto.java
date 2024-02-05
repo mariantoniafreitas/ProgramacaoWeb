@@ -33,20 +33,17 @@ public abstract class Produto implements Serializable {
     	this.valor = valor;
     }
     
+    public Produto() {}
+    
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public double getValor() {
-        return valor;
+        return this.valor;
     }
 
     public void setValor(double valor) {
         this.valor = valor;
     }
-    
-    public Produto() {
-    	
-    }
-
 }

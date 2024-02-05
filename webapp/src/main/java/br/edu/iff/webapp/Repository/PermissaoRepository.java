@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import br.edu.iff.webapp.Entities.Permissao;
+
 @Repository
 public interface PermissaoRepository extends JpaRepository<Permissao, Long> {
 	

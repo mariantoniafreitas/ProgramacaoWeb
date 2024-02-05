@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import br.edu.iff.webapp.Entities.Disco;
 import br.edu.iff.webapp.Entities.Pedido;
+import br.edu.iff.webapp.Entities.Produto;
 import br.edu.iff.webapp.Repository.DiscoRepository;
 import br.edu.iff.webapp.Repository.PedidoRepository;
+import br.edu.iff.webapp.Repository.ProdutoRepository;
 
 @Service
 public class DiscoService {
@@ -17,13 +19,34 @@ public class DiscoService {
 	private DiscoRepository DiscoRepository;
 	@Autowired
 	private PedidoRepository PedidoRepository;
+	@Autowired
+	private ProdutoRepository ProdutoRepository;
 	
-	public String addDisco(Disco disco) {
-		if(DiscoRepository.buscarPeloTitulo(disco.getTitulo())!=null) {
-			return "Disco já cadastrado";
-		}else{
-			Disco d1 = DiscoRepository.save(disco);
-			return "Registrado no id "+d1.getId();
+	public Disco addDisco(Disco disco) {
+		// Criar o Produto antes de Criar o Disco
+		//Produto produto = ProdutoRepository.save(new Produto(disco.getValor()));
+		try {
+			Disco returnedDisco = DiscoRepository.buscarPeloTitulo(disco.getTitulo());
+			
+			if(returnedDisco != null) {
+				throw new Exception("Disco já cadastrado");
+			}
+						
+			System.out.println("Id: " + disco.getId());
+			System.out.println("Valor: " + disco.getValor());
+			System.out.println("Genero: " + disco.getGenero());
+			System.out.println("Gravadora: " + disco.getGravadora());
+			System.out.println("Interprete: " + disco.getInterprete());
+			System.out.println("Tempo_Duracao: " + disco.getTempoDuracao());
+			System.out.println("Titulo: " + disco.getTitulo());
+			System.out.println("Total_Musicas: " + disco.getTotalMusicas());
+						
+			//Disco d1 = DiscoRepository.save(disco);
+			//return "Registrado no id " + disco.getId();
+			return DiscoRepository.save(disco);
+		} catch(Exception ex) {
+			throw new RuntimeException("Erro ao criar Disco: " + ex.getMessage());
+			//return "Disco (Service): " + ex.getMessage();
 		}
 	}
 	
@@ -65,7 +88,7 @@ public class DiscoService {
 		if(disco!=null) {	
 			List<Pedido> pedidos = PedidoRepository.BuscarPedidosPeloIdProduto(disco.getId());
 			for(int i=0;i<pedidos.size();i++) {
-				pedidos.get(i).deleteProduto(disco);
+				//pedidos.get(i).deleteProduto(disco);
 			}			
 			DiscoRepository.delete(disco);
 			return "Disco deletado no id "+disco.getId();				
@@ -86,14 +109,4 @@ public class DiscoService {
 	public Disco getDiscoById(Long id) {
 		return DiscoRepository.BuscarPeloId(id);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

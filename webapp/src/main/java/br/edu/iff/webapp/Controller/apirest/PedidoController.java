@@ -77,9 +77,5 @@ public class PedidoController {
 //	public String finalizarCompra(@PathVariable("id") Long id) throws Exception {
 //		return CompraServ.finalizarCompraPeloId(id);
 //	}
-	
-	
-	
-	
 
 }

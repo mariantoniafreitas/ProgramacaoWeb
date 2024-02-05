@@ -3,6 +3,8 @@ package br.edu.iff.webapp.Controller.apirest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,9 +59,16 @@ public class CargoController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    public Cargo getCargo(@PathVariable("id") Long id) {
-        return cargoService.getCargoId(id);
+    public ResponseEntity<?> getCargo(@PathVariable("id") Long id) {
+        Cargo cargo = cargoService.getCargoId(id);
+
+        if (cargo == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cargo não encontrado");
+        } else {
+            return ResponseEntity.ok(cargo);
+        }
     }
+
     
     @GetMapping("")
 	@ResponseBody

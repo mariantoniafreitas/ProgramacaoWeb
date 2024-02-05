@@ -67,5 +67,4 @@ public class Usuario implements Serializable {
 		this.senha = senha;
 		this.permissoes = new ArrayList<>();
 	}
-
 }

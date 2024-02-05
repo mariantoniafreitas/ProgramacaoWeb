@@ -123,7 +123,7 @@ public class PedidoService {
 				if(PedidoRepository.verificarProdutoPedido(disco.getId(),pedido.getId())==0) {
 					return "Disco não consta na compra";
 				}else {
-					pedido.deleteProduto(disco);
+					//pedido.deleteProduto(disco);
 					PedidoRepository.flush();
 					return "Disco removido";
 				}

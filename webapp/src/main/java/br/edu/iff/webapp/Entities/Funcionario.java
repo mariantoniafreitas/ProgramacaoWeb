@@ -1,15 +1,16 @@
 package br.edu.iff.webapp.Entities;
 
 
+import java.io.Serializable;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 
 @Entity
-public class Funcionario extends Pessoa {
+public class Funcionario extends Pessoa implements Serializable {
 
-    
     @ManyToOne()
 	@JoinColumn(name="fk_cargo")
     private Cargo cargo;
@@ -28,7 +29,4 @@ public class Funcionario extends Pessoa {
     public void setCargo(Cargo cargo) {
         this.cargo = cargo;
     }
-    
-    
-
 }

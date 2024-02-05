@@ -77,18 +77,4 @@ public class ClienteService {
 	public Cliente buscarPeloID(Long id) {
 		return ClienteRepository.BuscarPeloId(id);
 	}
-	
-
-	
-	
-	
-
-
-
-
-
-
-
-
-
 }

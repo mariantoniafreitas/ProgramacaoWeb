@@ -46,9 +46,11 @@ public abstract class Pessoa implements Serializable {
 	@Column(length = 60)
     private String endereco;
     
-    @Column(unique = true, length = 14)
-    @Pattern(regexp = "\\(\\d{2}\\) \\d{5}-\\d{4}", message = "Formato de data de nascimento inválido")
+    @Size(min = 1, max = 20, message = "Tem que ter entre 1 e 20 caracteres")
+    @Column(length = 20)
+    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "Formato de data de nascimento inválido. Use o formato yyyy-MM-dd")
     private String dataNascimento;
+
     
     @Size(min=1,max=20,message="Tem que ter entre 1 e 20 caractéres")
 	@Column(length = 20)

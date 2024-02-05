@@ -10,7 +10,6 @@ import br.edu.iff.webapp.Entities.Disco;
 
 @Repository
 public interface DiscoRepository extends JpaRepository<Disco, Long> {
-	
 	@Query(value="SELECT * FROM DISCO WHERE TITULO = ?1", nativeQuery = true)
 	Disco buscarPeloTitulo(String Titulo);
 	
