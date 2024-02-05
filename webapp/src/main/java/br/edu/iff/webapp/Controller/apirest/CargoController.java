@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.edu.iff.webapp.Entities.Cargo;
 import br.edu.iff.webapp.Service.CargoService;
+import io.swagger.v3.oas.annotations.Operation;
 
 @Controller
 @RequestMapping(path = "/cargo")
@@ -28,6 +29,7 @@ public class CargoController {
 
 	@PostMapping("")
 	@ResponseBody
+	@Operation(description = "Adicionar um novo cargo")
 	public String adicionarCargo(@RequestBody Cargo cargoRequest) {
 	    // Lógica para adicionar o cargo usando os dados de cargoRequest
 	    return cargoService.adicionarCargo(new Cargo(cargoRequest.getDescricao(), cargoRequest.getSalario(), cargoRequest.getNivelAcesso()));
@@ -36,6 +38,7 @@ public class CargoController {
 
 	@PutMapping("/{id}")
 	@ResponseBody
+	@Operation(description = "Atualizar um cargo")
 	public String putCargo(@PathVariable("id") Long id, @RequestBody Cargo cargoRequest) {
 	    Cargo cBusca = cargoService.getCargoId(id);
 	    if (cBusca == null) {            
@@ -48,6 +51,7 @@ public class CargoController {
 
     @DeleteMapping("/{id}")
     @ResponseBody
+    @Operation(description = "Apagar um cargo")
     public String deleteCargo(@PathVariable("id") Long id) {
     	Cargo cBusca = cargoService.getCargoId(id);
 		if(cBusca==null) {			
@@ -59,6 +63,7 @@ public class CargoController {
 
     @GetMapping("/{id}")
     @ResponseBody
+    @Operation(description = "Informacoes de um cargo")
     public ResponseEntity<?> getCargo(@PathVariable("id") Long id) {
         Cargo cargo = cargoService.getCargoId(id);
 
@@ -72,6 +77,7 @@ public class CargoController {
     
     @GetMapping("")
 	@ResponseBody
+	@Operation(description = "Listar todos os cargoS")
 	public List<Cargo> listarCargos() throws Exception {
 		return cargoService.listaDeCargos();
 	}

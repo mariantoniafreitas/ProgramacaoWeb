@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.edu.iff.webapp.Entities.Usuario;
 import br.edu.iff.webapp.Service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
 
 @Controller
 @RequestMapping(path = "/usuario")
@@ -24,12 +25,14 @@ public class UsuarioController {
 
 	@PostMapping("")
 	@ResponseBody
+	@Operation(description = "Adicionar um usuario")
 	public Usuario addUsuario(String login, String senha, String permissao) {
 		return usuarioService.salvar(login, senha, permissao);
 	}
 
 	@PutMapping("/{id}")
 	@ResponseBody
+	@Operation(description = "Atualizar um usuario")
 	public String atualizarUsuario(@PathVariable("id") Long id, String senha, String permissao) {
 		Usuario uBusca = usuarioService.buscarPorId(id);
 		if(uBusca==null) {			
@@ -47,6 +50,7 @@ public class UsuarioController {
 	
 	@DeleteMapping("/{id}")
 	@ResponseBody
+	@Operation(description = "Deletar um usuario")
 	public String deletarUsuario(@PathVariable("id") Long id){
 		Usuario uBusca = usuarioService.buscarPorId(id);
 		if(uBusca==null) {			
@@ -59,12 +63,14 @@ public class UsuarioController {
 
 	@GetMapping("")
 	@ResponseBody
+	@Operation(description = "Listar todos os usuarios")
 	public List<Usuario> listarUsuarios(){
 		return usuarioService.listarTodos();
 	}
 	
 	@GetMapping("/{id}")
 	@ResponseBody
+	@Operation(description = "Informacoes de um usuario")
 	public Usuario buscarUsuario(@PathVariable("id") Long id) {
 		return usuarioService.buscarPorId(id);
 	}

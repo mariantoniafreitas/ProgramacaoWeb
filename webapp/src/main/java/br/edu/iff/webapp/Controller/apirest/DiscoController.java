@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.edu.iff.webapp.Entities.Disco;
 import br.edu.iff.webapp.Service.DiscoService;
+import io.swagger.v3.oas.annotations.Operation;
 
 @Controller
 @RequestMapping(path = "/disco")
@@ -28,6 +29,8 @@ public class DiscoController {
 	private DiscoService discoService;
 
     @PostMapping("")
+    @ResponseBody
+    @Operation(description = "Adicionar um novo disco")
     public ResponseEntity addDisco(@RequestBody Disco disco) {
         try {
         	//return discoService.addDisco(new Disco(disco.getValor(), disco.getTitulo(), disco.getInterprete(), disco.getGenero(), disco.getGravadora(),disco.getTempoDuracao(), disco.getTotalMusicas()));
@@ -41,6 +44,7 @@ public class DiscoController {
 
     @PutMapping("/{id}")
     @ResponseBody
+    @Operation(description = "Atualizar um disco")
     public String atualizarDisco(@PathVariable("id") Long id, @RequestBody Disco disco) {
     	Disco dBusca = discoService.getDiscoById(id);
 
@@ -53,6 +57,7 @@ public class DiscoController {
 
     @DeleteMapping("/{id}")
     @ResponseBody
+    @Operation(description = "Apagar um disco")
     public String deleteDisco(@PathVariable("id") Long id) {
     	Disco eBusca = discoService.getDiscoById(id);
 		if(eBusca==null) {				
@@ -63,12 +68,14 @@ public class DiscoController {
 
     @GetMapping("")
 	@ResponseBody
+	@Operation(description = "Listar todos os discos")
 	public List<Disco> listarDiscos() throws Exception{
 		return discoService.listarDiscos();
 	}
 	
     @GetMapping("/{id}")
     @ResponseBody
+    @Operation(description = "Informacoes de um disco")
     public ResponseEntity<?> buscarDisco(@PathVariable("id") Long id) {
         Disco discoBusca = discoService.getDiscoById(id);
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.edu.iff.webapp.Entities.Funcionario;
 import br.edu.iff.webapp.Service.FuncionarioService;
+import io.swagger.v3.oas.annotations.Operation;
 
 @Controller
 @RequestMapping(path = "/funcionario")
@@ -25,12 +26,14 @@ public class FuncionarioController {
 
 	@PostMapping("")
 	@ResponseBody
+	@Operation(description = "Adicionar um novo funcionario")
 	public String addFuncionario(@RequestBody Funcionario funcionario, String descricao) throws Exception {			
 		return funcionarioService.addFuncionario(new Funcionario(funcionario.getNome(), funcionario.getEmail(), funcionario.getEmail(), funcionario.getTel(), funcionario.getSenha(), funcionario.getEndereco(), funcionario.getDataNascimento()), descricao);
 	}
 
 	@PutMapping("/{id}")
 	@ResponseBody
+	@Operation(description = "Atualizar um funcionario")
 	public String atualizarFuncionario(@PathVariable("id") Long id, String nome, String email, String senha, String descricao) {
 		Funcionario fBusca = funcionarioService.getFuncionarioById(id);
 		if(fBusca==null) {			
@@ -42,6 +45,7 @@ public class FuncionarioController {
 
 	@DeleteMapping("/{id}")
 	@ResponseBody
+	@Operation(description = "Deletar um funcionario")
 	public String deletarFuncionarioCPF(@PathVariable("id") Long id) {
 		Funcionario fBusca = funcionarioService.getFuncionarioById(id);
 		if(fBusca==null) {			
@@ -53,12 +57,14 @@ public class FuncionarioController {
 
 	@GetMapping("")
 	@ResponseBody
+	@Operation(description = "Listar todos os funcionarios")
 	public List<Funcionario> listarFuncionarios(){
 		return funcionarioService.listarFuncionarios();
 	}
 	
 	@GetMapping("/{id}")
 	@ResponseBody
+	@Operation(description = "Informacoes de um funcionario")
 	public Funcionario buscarFuncionarioId(@PathVariable("id") Long id){
 		return funcionarioService.getFuncionarioById(id);
 	}
