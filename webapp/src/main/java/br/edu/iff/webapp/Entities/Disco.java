@@ -1,6 +1,5 @@
 package br.edu.iff.webapp.Entities;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,17 +11,17 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 public class Disco extends Produto {
-
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank(message="Não pode ser em branco ou nulo")
+//	@Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private Long id;
+//	
+//	@Positive(message="Tem que ser maior que 0")
+//    private double valor;
+//	
+	@NotBlank(message="Não pode ser em branco ou nulo")
 	@Size(min=1,max=60,message="Tem que ter entre 1 e 60 caractéres")
 	@Column(unique=true, length = 60)
-    private String titulo;
+    private String titulo = " ";
 
     @Size(min=1,max=60,message="Tem que ter entre 1 e 60 caractéres")
 	@Column(length = 60)
@@ -37,30 +36,42 @@ public class Disco extends Produto {
     private String gravadora;
 
     @Positive(message="Tem que ser maior que 0")
-    private double tempoDuracao;
+    private double tempo_duracao;
 
     @Positive(message="Tem que ser maior que 0")
-    private int totalMusicas;
+    private int total_musicas;
 
-    public Disco(double valor, String titulo, String interprete, String genero, String gravadora, double tempoDuracao, int totalMusicas) {
+    public Disco(double valor, String titulo, String interprete, String genero, String gravadora, double tempo_duracao, int total_musicas) {
     	super(valor);
+    	//this.valor = valor;
     	this.titulo = titulo;
     	this.interprete = interprete;
     	this.genero = genero;
     	this.gravadora = gravadora;
-    	this.tempoDuracao = tempoDuracao;
-    	this.totalMusicas = totalMusicas;
-    }
-    public Long getId() {
-        return id;
+    	this.tempo_duracao = tempo_duracao;
+    	this.total_musicas = total_musicas;
     }
 
+    public Disco() {}
+    
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public double getValor() {
+//        return valor;
+//    }
+//
+//    public void setValor(double valor) {
+//        this.valor = valor;
+//    }
+    
     public double getTempoDuracao() {
-        return tempoDuracao;
+        return tempo_duracao;
     }
 
-    public void setTempoDuracao(double tempoDuracao) {
-        this.tempoDuracao = tempoDuracao;
+    public void setTempoDuracao(double tempo_duracao) {
+        this.tempo_duracao = tempo_duracao;
     }
 
     public String getTitulo() {
@@ -96,15 +107,11 @@ public class Disco extends Produto {
     }
 
     public int getTotalMusicas() {
-        return totalMusicas;
+        return total_musicas;
     }
 
-    public void setTotalMusicas(int totalMusicas) {
-        this.totalMusicas = totalMusicas;
-    }
-    
-    public Disco() {
-    	
+    public void setTotalMusicas(int total_musicas) {
+        this.total_musicas = total_musicas;
     }
 
 }
