@@ -18,10 +18,8 @@ public class Cargo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    private String nome;
     
     @Positive(message="Tem que ser maior que 0")
     private double salario;
@@ -38,10 +36,6 @@ public class Cargo implements Serializable {
         return id;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
     public double getSalario() {
         return salario;
     }
@@ -52,10 +46,6 @@ public class Cargo implements Serializable {
 
     public int getNivelAcesso() {
         return nivelAcesso;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     public void setNivelAcesso(int nivelAcesso) {
@@ -70,14 +60,12 @@ public class Cargo implements Serializable {
         this.salario = salario;
     }
     
-    public Cargo(String nome, double salario, String descricao, int nivelAcesso) {
+    public Cargo(String descricao, double salario, int nivelAcesso) {
 		super();
-		this.nome = nome;
-		this.salario = salario;
 		this.descricao = descricao;
+		this.salario = salario;
 		this.nivelAcesso = nivelAcesso;
 	}
-
     
     public Cargo() {
     	 

@@ -54,7 +54,7 @@ public class Usuario implements Serializable {
 		return permissoes;
 	}
 	
-	public void setPermissao(Permissao permissao) {
+	public void addPermissao(Permissao permissao) {
 		this.permissoes.add(permissao);
 	}
     
@@ -67,5 +67,4 @@ public class Usuario implements Serializable {
 		this.senha = senha;
 		this.permissoes = new ArrayList<>();
 	}
-
 }
