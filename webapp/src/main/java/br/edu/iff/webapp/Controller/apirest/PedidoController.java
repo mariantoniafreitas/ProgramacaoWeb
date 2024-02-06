@@ -24,10 +24,10 @@ public class PedidoController {
 	@Autowired
 	private PedidoService pedidoService;
 
-	@PostMapping("")
+	@PostMapping
 	@ResponseBody
 	@Operation(description = "Adicionar um pedido")
-	public String addPedido(String cpf) {			
+	public String addPedido(String cpf) {
 		return pedidoService.addPedido(cpf);
 	}
 

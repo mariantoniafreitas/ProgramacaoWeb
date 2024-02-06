@@ -25,6 +25,8 @@ public class PedidoService {
 	
 	public String addPedido(String cpf) {
 		Cliente cl = ClienteRepository.buscarPeloCPF(cpf);
+		System.out.println(cpf);
+		System.out.println(cl);
 		if(cl==null) {
 			return "Cliente não achado";
 		}else {

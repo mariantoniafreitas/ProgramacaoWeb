@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.edu.iff.webapp.Entities.Cargo;
@@ -31,7 +30,6 @@ public class CargoController {
 	@ResponseBody
 	@Operation(description = "Adicionar um novo cargo")
 	public String adicionarCargo(@RequestBody Cargo cargoRequest) {
-	    // Lógica para adicionar o cargo usando os dados de cargoRequest
 	    return cargoService.adicionarCargo(new Cargo(cargoRequest.getDescricao(), cargoRequest.getSalario(), cargoRequest.getNivelAcesso()));
 	}
 

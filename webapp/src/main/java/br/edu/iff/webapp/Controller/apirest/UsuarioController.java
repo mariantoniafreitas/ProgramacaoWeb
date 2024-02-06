@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -26,8 +27,13 @@ public class UsuarioController {
 	@PostMapping("")
 	@ResponseBody
 	@Operation(description = "Adicionar um usuario")
-	public Usuario addUsuario(String login, String senha, String permissao) {
-		return usuarioService.salvar(login, senha, permissao);
+	public Usuario addUsuario(@RequestBody Usuario usuario) {
+		System.out.println ("Usuario: " + usuario);
+		System.out.println ("login: " + usuario.getLogin());
+		System.out.println ("Senha: " + usuario.getSenha());
+		System.out.println ("permissao: " + "Cliente");
+		
+		return usuarioService.salvar(usuario.getLogin(), usuario.getSenha(), "Cliente");
 	}
 
 	@PutMapping("/{id}")

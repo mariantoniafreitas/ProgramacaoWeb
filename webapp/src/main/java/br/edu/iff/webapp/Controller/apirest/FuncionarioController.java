@@ -20,25 +20,28 @@ import io.swagger.v3.oas.annotations.Operation;
 @Controller
 @RequestMapping(path = "/funcionario")
 public class FuncionarioController {
-	
+
 	@Autowired
 	public FuncionarioService funcionarioService;
 
 	@PostMapping("")
 	@ResponseBody
 	@Operation(description = "Adicionar um novo funcionario")
-	public String addFuncionario(@RequestBody Funcionario funcionario, String descricao) throws Exception {			
-		return funcionarioService.addFuncionario(new Funcionario(funcionario.getNome(), funcionario.getEmail(), funcionario.getEmail(), funcionario.getTel(), funcionario.getSenha(), funcionario.getEndereco(), funcionario.getDataNascimento()), descricao);
+	public String addFuncionario(String nome, String email, String cpf, String tel, String senha, String endereco,
+			String dataNascimento, String descricao) throws Exception {
+		return funcionarioService
+				.addFuncionario(new Funcionario(nome, email, cpf, tel, senha, endereco, dataNascimento), descricao);
 	}
 
 	@PutMapping("/{id}")
 	@ResponseBody
 	@Operation(description = "Atualizar um funcionario")
-	public String atualizarFuncionario(@PathVariable("id") Long id, String nome, String email, String senha, String descricao) {
+	public String atualizarFuncionario(@PathVariable("id") Long id, String nome, String email, String senha,
+			String descricao) {
 		Funcionario fBusca = funcionarioService.getFuncionarioById(id);
-		if(fBusca==null) {			
+		if (fBusca == null) {
 			return "Funcionario não achado";
-		}else {
+		} else {
 			return funcionarioService.atualizarFuncionario(fBusca.getCpf(), nome, email, senha, descricao);
 		}
 	}
@@ -48,9 +51,9 @@ public class FuncionarioController {
 	@Operation(description = "Deletar um funcionario")
 	public String deletarFuncionarioCPF(@PathVariable("id") Long id) {
 		Funcionario fBusca = funcionarioService.getFuncionarioById(id);
-		if(fBusca==null) {			
+		if (fBusca == null) {
 			return "Funcionario não achado";
-		}else {
+		} else {
 			return funcionarioService.deletarFuncionarioCPF(fBusca.getCpf());
 		}
 	}
@@ -58,14 +61,14 @@ public class FuncionarioController {
 	@GetMapping("")
 	@ResponseBody
 	@Operation(description = "Listar todos os funcionarios")
-	public List<Funcionario> listarFuncionarios(){
+	public List<Funcionario> listarFuncionarios() {
 		return funcionarioService.listarFuncionarios();
 	}
-	
+
 	@GetMapping("/{id}")
 	@ResponseBody
 	@Operation(description = "Informacoes de um funcionario")
-	public Funcionario buscarFuncionarioId(@PathVariable("id") Long id){
+	public Funcionario buscarFuncionarioId(@PathVariable("id") Long id) {
 		return funcionarioService.getFuncionarioById(id);
 	}
 }
