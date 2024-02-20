@@ -1,5 +1,6 @@
 package br.edu.iff.webapp.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,169 +15,171 @@ import br.edu.iff.webapp.Repository.PedidoRepository;
 
 @Service
 public class PedidoService {
+
 	@Autowired
 	private PedidoRepository PedidoRepository;
+
 	@Autowired
 	private ClienteRepository ClienteRepository;
 
-	
 	@Autowired
 	private DiscoRepository DiscoRepository;
-	
-	public String addPedido(String cpf) {
-		Cliente cl = ClienteRepository.buscarPeloCPF(cpf);
-		System.out.println(cpf);
-		System.out.println(cl);
-		if(cl==null) {
+
+	public String adicionarPedido(Long id) {
+		Cliente c = ClienteRepository.buscarPeloId(id);
+		if (c == null) {
 			return "Cliente não achado";
-		}else {
-			if(PedidoRepository.BuscarPedidosAbertosPeloCPF(cpf).size()==0) {				
-				Pedido pedido = new Pedido(cpf);
-				cl.addPedido(pedido);
-				Pedido p = PedidoRepository.save(pedido);
-				ClienteRepository.flush();
-				return "Registrado no id "+p.getId();
-			}else {
+		} else {
+			if (PedidoRepository.buscarPedidosAbertosPeloId(id).size() == 0) {
+				Pedido pedido = new Pedido(c);
+				c.adicionarPedido(pedido);
+				Pedido p = PedidoRepository.saveAndFlush(pedido);
+				return "Registrado no id " + p.getId();
+			} else {
 				return "O cliente já tem uma compra aberta";
 			}
 		}
 	}
-	
-	public String atualizarPedido(Long idPedido, String cpf) {
-		Pedido pedido = PedidoRepository.BuscarPeloId(idPedido);
-		if(pedido==null) {
-			return "Compra não achada";
-		}else {		
-			if(pedido.isConcluido()) {
-				return "Compra já finalizada";
-			}else {				
-				if(cpf!=null) {				
-					Cliente cl = ClienteRepository.buscarPeloCPF(cpf);
-					if(cl==null) {
-						return "Cliente não achado";
-					}else {
-						pedido.setCpfCliente(cpf);
-						cl.addPedido(pedido);
-						ClienteRepository.flush();
-					}
-				}
-				ClienteRepository.flush();
-				return "Atualizado no id "+pedido.getId();
-			}
-		}
-	}
-	
-	public String deletarPedido(Long idPedido) {
-		Pedido pedido = PedidoRepository.BuscarPeloId(idPedido);
-		if(pedido==null) {
-			return "Compra não achada";
-		}else {		
-			Long idCliente = PedidoRepository.BuscarPeloIdCliente(idPedido);
-			Cliente cliente = ClienteRepository.BuscarPeloId(idCliente);
-			if(cliente==null) {
-				return "Cliente não achado";
-			}else {
-				cliente.deletePedido(pedido);
-				ClienteRepository.flush();
-			}
 
-			PedidoRepository.delete(pedido);
-			return "Deletado no id "+pedido.getId();
+	public String atualizarPedido(Long pedidoId, Long clienteId, LocalDateTime data_hora, double frete,
+			double total_pedido) {
+		Pedido pedido = buscarPeloId(pedidoId);
+		if (pedido == null) {
+			return "Pedido não encontrado.";
+		} else {
+			if (pedido.isConcluido()) {
+				return "Pedido já concluído.";
+			} else {
+				if (clienteId != null) {
+					Cliente c = ClienteRepository.buscarPeloId(clienteId);
+					if (c == null) {
+						return "Cliente não encontrado";
+					} else {
+						if (data_hora != null) {
+							pedido.setData_hora(data_hora);
+						}
+						if (total_pedido > 0) {
+							pedido.setTotalPedido(total_pedido);
+						}
+						if (frete > -1) {
+							pedido.setFrete(frete);
+						}
+						PedidoRepository.saveAndFlush(pedido);
+						return "Pedido atualizado no id " + pedido.getId();
+					}
+
+				}
+
+			}
+		}
+		return "Pedido não encontrado.";
+	}
+
+	public String deletarPedido(Long pedidoId) {
+		Pedido pedido = buscarPeloId(pedidoId);
+		if (pedido == null) {
+			return "Pedido não encontrado.";
+		} else {
+			Cliente cliente = ClienteRepository.buscarPeloId(pedido.getCliente().getId());
+			if (cliente == null) {
+				return "Cliente não achado";
+			} else {
+				cliente.deletarPedido(pedido);
+				ClienteRepository.saveAndFlush(cliente);
+				PedidoRepository.delete(pedido);
+				return "Pedido deletado no id " + pedido.getId();
+			}
 		}
 	}
-	
-	public List<Pedido> listarPedidos() throws Exception {
-		return PedidoRepository.findAll();
+
+	public List<Pedido> listarPedidos() {
+		return PedidoRepository.listarPedidos();
 	}
-	
-	public String addDisco(String idPedido, String titulo) {
-		Pedido pedido = PedidoRepository.BuscarPeloId(Long.parseLong(idPedido));
-		if(pedido==null) {
-			return "Pedido não encontrado";
-		}else {			
-			if(pedido.isConcluido()) {
-				return "Pedido já finalizado";
-			}else {				
-				Disco disco = DiscoRepository.buscarPeloTitulo(titulo);
-				if(disco==null) {
-					return "Disco não encontrado";
-				}else {
-					if(PedidoRepository.verificarProdutoPedido(disco.getId(),pedido.getId())!=0) {
-						return "Disco já cadastrado";
-					}else {					
-						pedido.addProduto(disco);
-						PedidoRepository.flush();
-						return "Disco adicionado";
+
+	public String adicionarDisco(Long pedidoId, Long discoId) {
+		Pedido pedido = buscarPeloId(pedidoId);
+		if (pedido == null) {
+			return "Pedido não encontrado.";
+		} else {
+			if (pedido.isConcluido()) {
+				return "Pedido já finalizado.";
+			} else {
+				Disco disco = DiscoRepository.buscarPeloId(discoId);
+				if (disco == null) {
+					return "Disco não encontrado.";
+				} else {
+					boolean discoExiste = pedido.getDiscos().stream().anyMatch(d -> d.getId().equals(discoId));
+
+					if (discoExiste) {
+						return "O disco já foi adicionado ao pedido.";
+					} else {
+						disco.setPedido(pedido);
+						pedido.adicionarDisco(disco);
+						PedidoRepository.saveAndFlush(pedido);
+						return "Disco adicionado ao pedido.";
 					}
 				}
 			}
 		}
 	}
-	
-	public String removeDisco(String idPedido, String titulo) {
-		Pedido pedido = PedidoRepository.BuscarPeloId(Long.parseLong(idPedido));
-		if(pedido==null) {
-			return "Pedido não encontrado";
-		}else {		
-			Disco disco = DiscoRepository.buscarPeloTitulo(titulo);
-			if(disco==null) {
-				return "Disco não encontrado";
-			}else {
-				if(PedidoRepository.verificarProdutoPedido(disco.getId(),pedido.getId())==0) {
-					return "Disco não consta na compra";
-				}else {
-					//pedido.deleteProduto(disco);
-					PedidoRepository.flush();
-					return "Disco removido";
-				}
-			}
-		}
-	}
-	
-	public List<Disco> ListarDiscoPeloIdCompra(Long id){
-		return DiscoRepository.ListarDiscoPeloIdCompra(id);
-	}
-	
-	public Pedido getPedidoById(Long id) {
-		return PedidoRepository.BuscarPeloId(id);
-	}
-	
-	public List<Pedido> buscarPeloCPFCliente(String cpf) {
-		return PedidoRepository.BuscarPeloCPF(cpf);
-	}
-	
-	
-	public String finalizarPedidoPeloId(Long idPedido) {
-		Pedido c = PedidoRepository.BuscarPeloId(idPedido);
-		if(c==null) {
-			return "Compra não encontrada";
-		}else {	
-			if(c.isConcluido()) {
-				return "Compra já finalizada";
-			}else {
-				if(c.getQtdProdutos()==0) {
-					return "A compra precisa ter no mínimo 1 produto.";
-				}else {
-						c.concluirPedido();
-						PedidoRepository.flush();
-						ClienteRepository.flush();
-						return "Compra finalizada com sucesso";
+
+	public String deletarDisco(Long pedidoId, Long discoId) {
+		Pedido pedido = buscarPeloId(pedidoId);
+		if (pedido == null) {
+			return "Pedido não encontrado.";
+		} else {
+			if (pedido.isConcluido()) {
+				return "Pedido já finalizado.";
+			} else {
+				Disco disco = DiscoRepository.buscarPeloId(discoId);
+				if (disco == null) {
+					return "Disco não encontrado.";
+				} else {
+					boolean discoExiste = pedido.getDiscos().stream().anyMatch(d -> d.getId().equals(discoId));
+
+					if (discoExiste) {
+						disco.setPedido(null);
+						pedido.deletarDisco(disco);
+						PedidoRepository.saveAndFlush(pedido);
+						return "Disco deletado do pedido.";
+					} else {
+						return "O disco não foi encontrado no pedido.";
 					}
 				}
 			}
 		}
-	
-	public Pedido PedidoAbertaPeloCPFCliente(String cpf) {
-		List<Pedido> compra = PedidoRepository.BuscarPedidosAbertosPeloCPF(cpf);
-		if(compra.size()==0) {
-			this.addPedido(cpf);
-			compra = PedidoRepository.BuscarPedidosAbertosPeloCPF(cpf);
+	}
+
+	public List<Disco> listarDiscoPeloIdPedido(Long id) {
+		Pedido pedido = buscarPeloId(id);
+		if (pedido != null) {
+			return pedido.getDiscos();
+		} else {
+			return null;
 		}
-		return compra.get(0);
 	}
-	
-	public List<Pedido> ListarFechadasPeloCPFCliente(String cpf) {
-		return PedidoRepository.BuscarPedidosFechadosPeloCPF(cpf);
+
+	public Pedido buscarPeloId(Long id) {
+		return PedidoRepository.buscarPeloId(id);
 	}
-	
+
+	public String finalizarPedido(Long idPedido) {
+		Pedido p = buscarPeloId(idPedido);
+		if (p == null) {
+			return "Pedido não encontrado.";
+		} else {
+			if (p.isConcluido()) {
+				return "Pedido já finalizado.";
+			} else {
+				if (p.getDiscos().size() == 0) {
+					return "O pedido precisa ter no mínimo 1 disco.";
+				} else {
+					p.concluirPedido();
+					PedidoRepository.saveAndFlush(p);
+					ClienteRepository.flush();
+					return "Pedido finalizado com sucesso.";
+				}
+			}
+		}
+	}
 }

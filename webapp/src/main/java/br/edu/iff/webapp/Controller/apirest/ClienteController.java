@@ -3,13 +3,14 @@ package br.edu.iff.webapp.Controller.apirest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,57 +20,71 @@ import br.edu.iff.webapp.Service.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 
 @Controller
-@RequestMapping(path = "/cliente")
+@RequestMapping(path = "/api/v1/cliente")
 public class ClienteController {
-	
+
 	@Autowired
 	public ClienteService clienteService;
-	
-	@PostMapping("")
+
+	@PostMapping
 	@ResponseBody
-	@Operation(description = "Adicionar um novo cliente")
-	public String addCliente(@RequestBody Cliente cliente) throws Exception {
-		return clienteService.addCliente(cliente);
-	    //return clienteService.addCliente(new Cliente(cliente.getNome(), cliente.getEmail(), cliente.getCpf(), cliente.getSenha(), cliente.getTel(), cliente.getEndereco(), cliente.getDataNascimento(), cliente.getSaldoDisponivel()));
-	}
-
-
-    @PutMapping("/{id}")
-    @ResponseBody
-    @Operation(description = "Atualizar um cliente")
-    public String atualizarCliente(@PathVariable("id") Long id, String nome, String email, String senha) {
-		Cliente cBusca = clienteService.buscarPeloID(id);
-		if(cBusca==null) {			
-			return "Cliente não achado";
-		}else {
-			return clienteService.atualizarCliente(cBusca.getCpf(), nome, email, senha);
+	@Operation(summary = "Adicionar um cliente em específico")
+	public ResponseEntity<String> adicionarCliente(@RequestParam String login, @RequestParam String senha,
+			@RequestParam String nome, @RequestParam String email, @RequestParam String cpf, @RequestParam String tel,
+			@RequestParam String endereco, @RequestParam String dataNascimento) {
+		try {
+			String mensagem = clienteService.adicionarCliente(login, senha, nome, email, cpf, tel, endereco,
+					dataNascimento);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar cliente.");
 		}
 	}
 
-    @DeleteMapping("/{id}")
-    @ResponseBody
-    @Operation(description = "Apagar um cliente")
-    public String deleteCliente(@PathVariable("id") Long id) {
-    	Cliente cBusca = clienteService.buscarPeloID(id);
-		if(cBusca==null) {			
-			return "Cliente não achado";
-		}else {			
-			return clienteService.deletarCliente(cBusca.getCpf());
+	@PutMapping("/{id}")
+	@ResponseBody
+	@Operation(summary = "Atualizar um cliente em específico")
+	public ResponseEntity<String> atualizarCliente(@PathVariable Long id, @RequestParam String nome,
+			@RequestParam String email, @RequestParam String cpf, @RequestParam String tel,
+			@RequestParam String endereco, @RequestParam String dataNascimento) {
+		try {
+			String mensagem = clienteService.atualizarCliente(id, nome, email, cpf, tel, endereco, dataNascimento);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar cliente.");
 		}
 	}
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    @Operation(description = "Informacoes de um cliente")
-    public Cliente buscarClienteId(@PathVariable("id") Long id) {
-		return clienteService.buscarPeloID(id);
-	}
-    
-    @GetMapping("")
+	@DeleteMapping("/{id}")
 	@ResponseBody
-	@Operation(description = "Listar todos os clientes")
-	public List<Cliente> listarClientes() {
-		return clienteService.listarClientes();
+	@Operation(summary = "Deletar um cliente em específico")
+	public ResponseEntity<String> deletarCliente(@PathVariable Long id) {
+		try {
+			String mensagem = clienteService.deletarCliente(id);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar cliente.");
+		}
+	}
+
+	@GetMapping("/{id}")
+	@ResponseBody
+	@Operation(summary = "Retornar um cliente em específico")
+	public ResponseEntity<Cliente> buscarCliente(@PathVariable Long id) {
+		try {
+			Cliente cliente = clienteService.buscarPeloId(id);
+			return ResponseEntity.ok(cliente);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
+	}
+
+	@GetMapping
+	@ResponseBody
+	@Operation(summary = "Listar todos os clientes")
+	public ResponseEntity<List<Cliente>> listarClientes() {
+		List<Cliente> clientes = clienteService.listarClientes();
+		return ResponseEntity.ok(clientes);
 	}
 
 }

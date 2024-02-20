@@ -10,12 +10,12 @@ import br.edu.iff.webapp.Entities.Usuario;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-	@Query(value="SELECT * FROM USUARIO WHERE LOGIN = ?1", nativeQuery = true)
-	public Usuario findByLogin(String login);
-	
-	@Query(value="SELECT * FROM USUARIO WHERE ID = ?1", nativeQuery = true)
-	public Usuario buscarPorId(Long id);
-	
-	@Query(value="SELECT * FROM USUARIO", nativeQuery = true)
-	public List<Usuario> listarTodos();
+	@Query(value = "SELECT * FROM USUARIO WHERE LOGIN = ?1", nativeQuery = true)
+	Usuario buscarPeloLogin(String login);
+
+	@Query(value = "SELECT * FROM USUARIO WHERE ID = ?1", nativeQuery = true)
+	Usuario buscarPorId(Long id);
+
+	@Query(value = "SELECT * FROM USUARIO", nativeQuery = true)
+	List<Usuario> listarUsuarios();
 }

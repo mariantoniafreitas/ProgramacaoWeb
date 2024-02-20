@@ -5,62 +5,59 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.edu.iff.webapp.Entities.Permissao;
 import br.edu.iff.webapp.Entities.Usuario;
-import br.edu.iff.webapp.Repository.PermissaoRepository;
 import br.edu.iff.webapp.Repository.UsuarioRepository;
-
-
 
 @Service
 public class UsuarioService {
-	
-	@Autowired 
-	private UsuarioRepository UsuarioRepository;
+
 	@Autowired
-	private PermissaoRepository PermissaoRepository;
+	private UsuarioRepository UsuarioRepository;
 
+	public Usuario adicionarUsuario(String login, String senha, int permissao) {
+		Usuario buscaU = UsuarioRepository.buscarPeloLogin(login);
+		if (buscaU == null) {
+			Usuario usuario = new Usuario(login, senha, permissao);
+			Usuario u = UsuarioRepository.save(usuario);
+			return u;
+		}
+		return null;
+	}
 
-	
-	public Usuario salvar(String login, String senha, String permissao) {
-		Usuario usuario = new Usuario(login, senha);
-		usuario.setSenha(senha);
-		Permissao perm = PermissaoRepository.getByAcesso(permissao);
-		if(perm == null) {
-			perm = new Permissao(permissao);
-			PermissaoRepository.save(perm);
+	public String atualizarUsuario(Long id, String login, String senha, int permissao) {
+		Usuario u = buscarPorId(id);
+		if (u != null) {
+			if (u.getLogin().equals(login)) {
+				if (senha != null) {
+					u.setSenha(senha);
+					UsuarioRepository.save(u);
+				}
+				if (permissao > -1) {
+					u.setPermissao(permissao);
+					UsuarioRepository.save(u);
+				}
+				return "Usuário atualizado.";
+			}
+			return "O Id inserido não corresponde ao login.";
 		}
-		usuario.addPermissao(perm);
-		Usuario u = UsuarioRepository.save(usuario);
-		return u;
+		return "Usuário não encontrado.";
 	}
-	
-	public void atualizarSenha(Usuario usuario, String senha) {
-		usuario.setSenha(senha);
-		UsuarioRepository.flush();
-	}
-	
-	public void atualizarPermissao(Usuario usuario, String permissao) {
-		Permissao perm = PermissaoRepository.getByAcesso(permissao);
-		if(perm == null) {
-			perm = new Permissao(permissao);
-			PermissaoRepository.save(perm);
+
+	public String deletarUsuario(Long id) {
+		Usuario u = buscarPorId(id);
+		if (u != null) {
+			UsuarioRepository.delete(u);
+			return "Usuário deletado.";
 		}
-		usuario.getPermissoes().remove(0);
-		usuario.addPermissao(perm);
-		UsuarioRepository.save(usuario);
+		return "Usuário não deletado.";
 	}
-	
-	public void deletarPorId(Long id) {
-		UsuarioRepository.delete(UsuarioRepository.buscarPorId(id));
-	}
-	
+
 	public Usuario buscarPorId(Long id) {
 		return UsuarioRepository.buscarPorId(id);
 	}
-	
-	public List<Usuario> listarTodos(){
-		return UsuarioRepository.listarTodos();
+
+	public List<Usuario> listarUsuarios() {
+		return UsuarioRepository.listarUsuarios();
 	}
 
 }

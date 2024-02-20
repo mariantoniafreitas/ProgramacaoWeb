@@ -6,107 +6,70 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.edu.iff.webapp.Entities.Disco;
-import br.edu.iff.webapp.Entities.Pedido;
-import br.edu.iff.webapp.Entities.Produto;
 import br.edu.iff.webapp.Repository.DiscoRepository;
-import br.edu.iff.webapp.Repository.PedidoRepository;
-import br.edu.iff.webapp.Repository.ProdutoRepository;
 
 @Service
 public class DiscoService {
-	
+
 	@Autowired
 	private DiscoRepository DiscoRepository;
-	@Autowired
-	private PedidoRepository PedidoRepository;
-	@Autowired
-	private ProdutoRepository ProdutoRepository;
-	
-	public Disco addDisco(Disco disco) {
-		// Criar o Produto antes de Criar o Disco
-		//Produto produto = ProdutoRepository.save(new Produto(disco.getValor()));
-		try {
-			Disco returnedDisco = DiscoRepository.buscarPeloTitulo(disco.getTitulo());
-			
-			if(returnedDisco != null) {
-				throw new Exception("Disco já cadastrado");
-			}
-						
-			System.out.println("Id: " + disco.getId());
-			System.out.println("Valor: " + disco.getValor());
-			System.out.println("Genero: " + disco.getGenero());
-			System.out.println("Gravadora: " + disco.getGravadora());
-			System.out.println("Interprete: " + disco.getInterprete());
-			System.out.println("Tempo_Duracao: " + disco.getTempoDuracao());
-			System.out.println("Titulo: " + disco.getTitulo());
-			System.out.println("Total_Musicas: " + disco.getTotalMusicas());
-						
-			//Disco d1 = DiscoRepository.save(disco);
-			//return "Registrado no id " + disco.getId();
-			return DiscoRepository.save(disco);
-		} catch(Exception ex) {
-			throw new RuntimeException("Erro ao criar Disco: " + ex.getMessage());
-			//return "Disco (Service): " + ex.getMessage();
+
+	public boolean adicionarDisco(double valor, String titulo, String interprete, String genero, String gravadora,
+			double tempo_duracao, int total_musicas) {
+		Disco d = DiscoRepository.buscarPeloTitulo(titulo);
+		if (d != null) {
+			return false;
 		}
+		Disco novoDisco = new Disco(valor, titulo, interprete, genero, gravadora, tempo_duracao, total_musicas);
+		DiscoRepository.saveAndFlush(novoDisco);
+		return true;
 	}
-	
-	public String atualizarDisco(String titulo, double valor, String genero, String interprete, String gravadora, int totalMusicas, double tempoDuracao) {
-		Disco disco = DiscoRepository.buscarPeloTitulo(titulo);
-		if(disco==null) {
+
+	public String atualizarDisco(Long id, double valor, String titulo, String interprete, String genero,
+			String gravadora, double tempo_duracao, int total_musicas) {
+		Disco d = buscarPeloId(id);
+		if (d == null) {
 			return "Disco não achado";
-		}else {		
-			if(valor>=0) {
-				double diferencaPreco = disco.getValor() - valor;
-				List<Pedido> pedidos = PedidoRepository.BuscarPedidosPeloIdProduto(disco.getId());
-				for(int i=0;i<pedidos.size();i++) {
-					pedidos.get(i).setTotalPedido(pedidos.get(i).getTotalPedido()-diferencaPreco);
-				}
-				disco.setValor(valor);
+		} else {
+			if (valor >= 0) {
+				d.setValor(valor);
 			}
-			if(totalMusicas>=0) {				
-				disco.setTotalMusicas(totalMusicas);
+			if (total_musicas >= 0) {
+				d.setTotalMusicas(total_musicas);
 			}
-			if(genero!=null) {				
-				disco.setGenero(genero);
+			if (genero != null) {
+				d.setGenero(genero);
 			}
-			if(interprete!=null) {				
-				disco.setInterprete(interprete);
+			if (interprete != null) {
+				d.setInterprete(interprete);
 			}
-			if(gravadora!=null) {				
-				disco.setGravadora(gravadora);
+			if (gravadora != null) {
+				d.setGravadora(gravadora);
 			}
-			if(tempoDuracao > 0) {
-				disco.setTempoDuracao(tempoDuracao);
+			if (tempo_duracao > 0) {
+				d.setTempoDuracao(tempo_duracao);
 			}
-			DiscoRepository.flush();
-			return "Atualizado no id "+disco.getId();
+			DiscoRepository.saveAndFlush(d);
+			return "Disco atualizado no id " + d.getId();
 		}
 	}
-	
-	public String deletarDiscoTitulo(String titulo) {
-		Disco disco = DiscoRepository.buscarPeloTitulo(titulo);
-		if(disco!=null) {	
-			List<Pedido> pedidos = PedidoRepository.BuscarPedidosPeloIdProduto(disco.getId());
-			for(int i=0;i<pedidos.size();i++) {
-				//pedidos.get(i).deleteProduto(disco);
-			}			
-			DiscoRepository.delete(disco);
-			return "Disco deletado no id "+disco.getId();				
-		}else {
+
+	public String deletarDisco(Long id) {
+		Disco d = buscarPeloId(id);
+		if (d != null) {
+			DiscoRepository.delete(d);
+			return "Disco deletado no id " + d.getId();
+		} else {
 			return "Disco não encontrado";
 		}
 	}
-	
-	public List<Disco> listarDiscos() throws Exception {
-		return DiscoRepository.findAll();
+
+	public List<Disco> listarDiscos() {
+		return DiscoRepository.listarDiscos();
 	}
 
-	//pelotitulo
-	public Disco buscarDisco(String titulo) {
-		return DiscoRepository.buscarPeloTitulo(titulo);
+	public Disco buscarPeloId(Long id) {
+		return DiscoRepository.buscarPeloId(id);
 	}
-	
-	public Disco getDiscoById(Long id) {
-		return DiscoRepository.BuscarPeloId(id);
-	}
+
 }

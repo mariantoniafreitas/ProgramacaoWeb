@@ -16,65 +16,78 @@ public class ClienteService {
 
 	@Autowired
 	private ClienteRepository ClienteRepository;
-	@Autowired 
+	@Autowired
 	private PedidoRepository PedidoRepository;
 	@Autowired
 	private UsuarioService UsuarioService;
 
-	public String addCliente(Cliente cliente) {
-		if(ClienteRepository.buscarPeloCPF(cliente.getCpf())!=null) {
-			return "Cliente já cadastrado";
-		}else{
-			Usuario usuario = UsuarioService.salvar(cliente.getCpf(), cliente.getSenha(), "Cliente");
-			cliente.setUsuario(usuario);
-			ClienteRepository.save(cliente);
-			return "Registrado com sucesso";
+	public String adicionarCliente(String login, String senha, String nome, String email, String cpf, String tel,
+			String endereco, String dataNascimento) {
+		if (ClienteRepository.buscarPeloCPF(cpf) == null) {
+			Usuario usuario = UsuarioService.adicionarUsuario(login, senha, 0);
+			if (usuario != null) {
+				Cliente c = new Cliente(nome, email, cpf, tel, endereco, dataNascimento);
+				c.setUsuario(usuario);
+				ClienteRepository.save(c);
+				return "Cliente registrado com sucesso";
+			}
+			return "Login já existe.";
 		}
+		return "Cliente já cadastrado neste CPF.";
 	}
-	
-	public String atualizarCliente (String cpf, String nome, String email, String senha) {
-		Cliente c = ClienteRepository.buscarPeloCPF(cpf);
-		if(c==null) {
+
+	public String atualizarCliente(Long id, String nome, String email, String cpf, String tel, String endereco,
+			String dataNascimento) {
+		Cliente c = buscarPeloId(id);
+		if (c == null) {
 			return "Cliente não encontrado.";
 		} else {
-			if(nome!=null) {
+			if (nome != null) {
 				c.setNome(nome);
 			}
-			if(email!=null) {
+			if (email != null) {
 				c.setEmail(email);
 			}
-			if(senha!=null) {
-				c.setSenha(senha);
-				UsuarioService.atualizarSenha(c.getUsuario(), senha);
+			if (cpf != null) {
+				c.setCpf(cpf);
 			}
-			ClienteRepository.flush();
-			return "Atualizado no id" +c.getId();
+			if (tel != null) {
+				c.setTel(tel);
+			}
+			if (endereco != null) {
+				c.setEndereco(endereco);
+			}
+			if (dataNascimento != null) {
+				c.setDataNascimento(dataNascimento);
+			}
+			ClienteRepository.saveAndFlush(c);
+			return "Cliente atualizado no id" + c.getId();
 		}
 	}
-	
-	public String deletarCliente(String cpf) {
-		Cliente c = ClienteRepository.buscarPeloCPF(cpf);
-		if(c!=null) {
-			List<Pedido> pedidos = PedidoRepository.BuscarPedidosAbertosPeloCPF(cpf);
-			for(int i=0;i<pedidos.size();i++) {
+
+	public String deletarCliente(Long id) {
+		Cliente c = buscarPeloId(id);
+		if (c != null) {
+			List<Pedido> pedidos = PedidoRepository.buscarPedidosAbertosPeloId(id);
+			for (int i = 0; i < pedidos.size(); i++) {
 				PedidoRepository.delete(pedidos.get(i));
 			}
 			ClienteRepository.delete(c);
-			return "Cliente deletado no id "+c.getId();
-		}else {
+			return "Cliente deletado no id " + c.getId();
+		} else {
 			return "Cliente não encontrado";
 		}
 	}
-	
-	public List<Cliente> listarClientes(){
-		return ClienteRepository.findAll();
+
+	public List<Cliente> listarClientes() {
+		return ClienteRepository.listarClientes();
 	}
-	
+
 	public Cliente buscarClienteCPF(String cpf) {
 		return ClienteRepository.buscarPeloCPF(cpf);
 	}
-	
-	public Cliente buscarPeloID(Long id) {
-		return ClienteRepository.BuscarPeloId(id);
+
+	public Cliente buscarPeloId(Long id) {
+		return ClienteRepository.buscarPeloId(id);
 	}
 }

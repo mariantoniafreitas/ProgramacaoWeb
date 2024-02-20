@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.edu.iff.webapp.Entities.Disco;
@@ -20,70 +20,73 @@ import br.edu.iff.webapp.Service.DiscoService;
 import io.swagger.v3.oas.annotations.Operation;
 
 @Controller
-@RequestMapping(path = "/disco")
+@RequestMapping(path = "/api/v1/disco")
 public class DiscoController {
-	//INSERT INTO DISCO (genero, gravadora, interprete, tempo_duracao, titulo, total_musicas, id, valor) VALUES ('Tal do genero', 'Tal do gravadora', 'Tal do interprete', 280.5, 'Tal do titulo', 10, 1, 25.60);
-	//SELECT * FROM DISCO;
-	
-	@Autowired 
+
+	@Autowired
 	private DiscoService discoService;
 
-    @PostMapping("")
-    @ResponseBody
-    @Operation(description = "Adicionar um novo disco")
-    public ResponseEntity addDisco(@RequestBody Disco disco) {
-        try {
-        	//return discoService.addDisco(new Disco(disco.getValor(), disco.getTitulo(), disco.getInterprete(), disco.getGenero(), disco.getGravadora(),disco.getTempoDuracao(), disco.getTotalMusicas()));
-        	discoService.addDisco(disco);
-        	return ResponseEntity.status(HttpStatus.CREATED).body(disco);
-        } catch(Exception ex) {
-        	return ResponseEntity.status(500).body(ex.getMessage());
-        	//return "Disco (Controller): " + ex.getMessage();
-        }
-    }
-
-    @PutMapping("/{id}")
-    @ResponseBody
-    @Operation(description = "Atualizar um disco")
-    public String atualizarDisco(@PathVariable("id") Long id, @RequestBody Disco disco) {
-    	Disco dBusca = discoService.getDiscoById(id);
-
-    	if(dBusca==null) {				
-			return "Disco não achado";
-		}else {
-			return discoService.atualizarDisco(dBusca.getTitulo(), disco.getValor(), disco.getGenero(), disco.getInterprete(), disco.getGravadora(), disco.getTotalMusicas(), disco.getTempoDuracao());
-		}
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseBody
-    @Operation(description = "Apagar um disco")
-    public String deleteDisco(@PathVariable("id") Long id) {
-    	Disco eBusca = discoService.getDiscoById(id);
-		if(eBusca==null) {				
-			return "Disco não achado";
-		}else {
-			return discoService.deletarDiscoTitulo(eBusca.getTitulo());
-		}}
-
-    @GetMapping("")
+	@PostMapping
 	@ResponseBody
-	@Operation(description = "Listar todos os discos")
-	public List<Disco> listarDiscos() throws Exception{
-		return discoService.listarDiscos();
+	@Operation(summary = "Adicionar um disco em específico")
+	public ResponseEntity<String> adicionarDisco(@RequestParam double valor, @RequestParam String titulo,
+			@RequestParam String interprete, @RequestParam String genero, @RequestParam String gravadora,
+			@RequestParam double tempo_duracao, @RequestParam int total_musicas) {
+		try {
+			boolean resultado = discoService.adicionarDisco(valor, titulo, interprete, genero, gravadora, tempo_duracao,
+					total_musicas);
+			return ResponseEntity
+					.ok(resultado ? "Disco cadastrado com sucesso." : "Disco já cadastrado com esse titulo.");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar disco.");
+		}
 	}
-	
-    @GetMapping("/{id}")
-    @ResponseBody
-    @Operation(description = "Informacoes de um disco")
-    public ResponseEntity<?> buscarDisco(@PathVariable("id") Long id) {
-        Disco discoBusca = discoService.getDiscoById(id);
 
-        if (discoBusca == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Disco não achado");
-        } else {
-            return ResponseEntity.ok(discoBusca);
-        }
-    }
+	@PutMapping("/{id}")
+	@ResponseBody
+	@Operation(summary = "Atualizar um disco em específico")
+	public ResponseEntity<String> atualizarDisco(@PathVariable Long id, @RequestParam double valor,
+			@RequestParam String titulo, @RequestParam String interprete, @RequestParam String genero,
+			@RequestParam String gravadora, @RequestParam double tempo_duracao, @RequestParam int total_musicas) {
+		try {
+			String mensagem = discoService.atualizarDisco(id, valor, titulo, interprete, genero, gravadora,
+					tempo_duracao, total_musicas);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar o disco.");
+		}
+	}
+
+	@DeleteMapping("/{id}")
+	@ResponseBody
+	@Operation(summary = "Deletar um disco em específico")
+	public ResponseEntity<String> deletarDisco(@PathVariable Long id) {
+		try {
+			String mensagem = discoService.deletarDisco(id);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar disco.");
+		}
+	}
+
+	@GetMapping
+	@ResponseBody
+	@Operation(summary = "Listar todos os discos")
+	public ResponseEntity<List<Disco>> listarDiscos() {
+		List<Disco> discos = discoService.listarDiscos();
+		return ResponseEntity.ok(discos);
+	}
+
+	@GetMapping("/{id}")
+	@ResponseBody
+	@Operation(summary = "Retornar um disco em específico")
+	public ResponseEntity<Disco> buscarDisco(@PathVariable Long id) {
+		try {
+			Disco disco = discoService.buscarPeloId(id);
+			return ResponseEntity.ok(disco);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
+	}
 
 }

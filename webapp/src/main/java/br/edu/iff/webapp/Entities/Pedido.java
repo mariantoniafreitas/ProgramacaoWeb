@@ -1,123 +1,131 @@
 package br.edu.iff.webapp.Entities;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 public class Pedido implements Serializable {
-	// = Compra
-    private static final long serialVersionUID = 1L;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    @PastOrPresent(message="Não pode ser no futuro")
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
+	@NotNull(message = "A data do pedido não pode ser nula")
+	@PastOrPresent(message = "Não pode ser no futuro")
 	@Temporal(TemporalType.TIMESTAMP)
-    private Calendar dataHora;
-    
-    @PositiveOrZero(message="Tem que ser maior ou igual a 0")
-    private int qtdProdutos;
+	private LocalDateTime data_hora;
 
-    @PositiveOrZero(message="Tem que ser maior ou igual a 0")
-    private double totalPedido;
+	@PositiveOrZero(message = "Tem que ser maior ou igual a 0")
+	private double frete;
 
-    private boolean concluido;
+	@PositiveOrZero(message = "Tem que ser maior ou igual a 0")
+	private double total_pedido;
 
-    @NotBlank(message="Não pode ser em branco ou nulo")
-	@Pattern(regexp="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}", message="Deve seguir o padrão do CPF")
-    private String cpfCliente;
-    
-    @ManyToMany
-	@JoinTable(name = "pedido_produto",
-				joinColumns = @JoinColumn(name = "fk_pedido"),
-				inverseJoinColumns = @JoinColumn(name = "fk_produto"))
-	private List<Produto> produto;
-    
-    public Pedido(String cpfCliente) {
-    	this.concluido = false;
-    	this.qtdProdutos = 0;
-    	this.produto =  new ArrayList<>();
-    	this.cpfCliente = cpfCliente;
-    }
-    
-    public Pedido() {
-    	
-    }
+	private boolean concluido;
 
-    public Long getId() {
-        return id;
-    }
+	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+	@JsonManagedReference
+	private List<Disco> discos;
 
-    public int getQtdProdutos() {
-        return qtdProdutos;
-    }
+	@ManyToOne
+	@JoinColumn(name = "cliente_id")
+	@JsonIgnore
+	private Cliente cliente;
 
-    public void setQtdProdutos(int qtdProdutos) {
-        this.qtdProdutos = qtdProdutos;
-    }
-
-    public double getTotalPedido() {
-        return totalPedido;
-    }
-
-    public void setTotalPedido(double totalPedido) {
-        this.totalPedido = totalPedido;
-    }
-
-    public String getCpfCliente() {
-        return cpfCliente;
-    }
-
-    public void setCpfCliente(String cpfCliente) {
-        this.cpfCliente = cpfCliente;
-    }
-    
-    public void addProduto(Produto produto) {
-		this.produto.add(produto);
-		this.qtdProdutos++;
-		this.totalPedido+=produto.getValor();
+	public Pedido(Cliente cliente) {
+		this.concluido = false;
+		this.cliente = cliente;
+		this.discos = new ArrayList<>();
 	}
-	
-	public void deleteProduto(Produto produto) {
-		this.produto.remove(produto);
-		this.qtdProdutos--;
-		this.totalPedido-=produto.getValor();
+
+	public Pedido() {
+
 	}
-    
-    public void concluirPedido() {
+
+	public Long getId() {
+		return id;
+	}
+
+	public double getTotalPedido() {
+		return total_pedido;
+	}
+
+	public void setTotalPedido(double totalPedido) {
+		this.total_pedido = totalPedido;
+	}
+
+	public double getFrete() {
+		return frete;
+	}
+
+	public void setFrete(double frete) {
+		this.frete = frete;
+	}
+
+	public List<Disco> getDiscos() {
+		return discos;
+	}
+
+	public void setDiscos(List<Disco> discos) {
+		this.discos = discos;
+	}
+
+	public void adicionarDisco(Disco disco) {
+		this.discos.add(disco);
+		this.total_pedido += disco.getValor();
+		disco.setPedido(this);
+	}
+
+	public void deletarDisco(Disco disco) {
+		this.discos.remove(disco);
+		this.total_pedido -= disco.getValor();
+		disco.setPedido(null);
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public void concluirPedido() {
 		this.concluido = true;
-		this.dataHora = Calendar.getInstance();
+		this.data_hora = LocalDateTime.now();
 	}
-	
+
 	public boolean isConcluido() {
 		return this.concluido;
 	}
-	
-	public String getDataHora() {
-		if (dataHora != null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-            return dateFormat.format(dataHora.getTime());
-        } else {
-            return "";
-        }
+
+	public LocalDateTime getData_hora() {
+		return data_hora;
+	}
+
+	public void setData_hora(LocalDateTime data_hora) {
+		this.data_hora = data_hora;
 	}
 
 }

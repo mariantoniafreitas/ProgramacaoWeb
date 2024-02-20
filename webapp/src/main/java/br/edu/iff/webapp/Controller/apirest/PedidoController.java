@@ -1,15 +1,21 @@
 package br.edu.iff.webapp.Controller.apirest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import br.edu.iff.webapp.Entities.Disco;
@@ -18,73 +24,117 @@ import br.edu.iff.webapp.Service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
 
 @Controller
-@RequestMapping(path = "/pedido")
+@RequestMapping(path = "/api/v1/pedido")
 public class PedidoController {
-	
+
 	@Autowired
 	private PedidoService pedidoService;
 
 	@PostMapping
 	@ResponseBody
-	@Operation(description = "Adicionar um pedido")
-	public String addPedido(String cpf) {
-		return pedidoService.addPedido(cpf);
+	@Operation(summary = "Adicionar um pedido em específico")
+	public ResponseEntity<String> adicionarPedido(@RequestParam Long clienteId) {
+		try {
+			String mensagem = pedidoService.adicionarPedido(clienteId);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar pedido.");
+		}
 	}
 
 	@PutMapping("/{id}")
 	@ResponseBody
-	@Operation(description = "Atualizar um pedido")
-	public String atualizarPedido(@PathVariable("id") Long id, String cpf) throws Exception {
-		return pedidoService.atualizarPedido(id, cpf);
+	@Operation(summary = "Atualizar um pedido em específico")
+	public ResponseEntity<String> atualizarPedido(@PathVariable("id") Long id, @RequestParam Long clienteId,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime data_hora,
+			@RequestParam double frete, @RequestParam double total_pedido) {
+
+		try {
+			String mensagem = pedidoService.atualizarPedido(id, clienteId, data_hora, frete, total_pedido);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar pedido.");
+		}
 	}
 
 	@DeleteMapping("/{id}")
 	@ResponseBody
-	@Operation(description = "Deletar um pedido")
-	public String deletarPedido(@PathVariable("id") Long id) {
-		return pedidoService.deletarPedido(id);
+	@Operation(summary = "Deletar um pedido em específico")
+	public ResponseEntity<String> deletarPedido(@PathVariable("id") Long id) {
+		try {
+			String mensagem = pedidoService.deletarPedido(id);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar pedido.");
+		}
 	}
-	
-	@GetMapping("")
+
+	@GetMapping
 	@ResponseBody
-	@Operation(description = "Listar todos os pedidos")
-	public List<Pedido> listarPedidos() throws Exception{
-		return pedidoService.listarPedidos();
+	@Operation(summary = "Listar todos os pedidos")
+	public ResponseEntity<List<Pedido>> listarPedidos() {
+		List<Pedido> pedidos = pedidoService.listarPedidos();
+		return ResponseEntity.ok(pedidos);
 	}
-	
+
 	@GetMapping("/{id}")
 	@ResponseBody
-	@Operation(description = "Informacoes de um pedido")
-	public Pedido buscarPedido(@PathVariable("id") Long id) {
-		return pedidoService.getPedidoById(id);
+	@Operation(summary = "Retornar um pedido em específico")
+	public ResponseEntity<Pedido> buscarPedido(@PathVariable("id") Long id) {
+		try {
+			Pedido pedido = pedidoService.buscarPeloId(id);
+			return ResponseEntity.ok(pedido);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
 	}
-	
-	@PostMapping("/{id}/discos")
+
+	@PostMapping("/{id}/disco")
 	@ResponseBody
-	@Operation(description = "Adicionar um disco em um pedido")
-	public String adDisco(@PathVariable("id") String id, String titulo) {
-		return pedidoService.addDisco(id, titulo);
+	@Operation(summary = "Adicionar um disco ao pedido em um cliente em específico")
+	public ResponseEntity<String> adicionarDisco(@PathVariable("id") Long id, @RequestParam Long discoId) {
+		try {
+			String mensagem = pedidoService.adicionarDisco(id, discoId);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar disco ao pedido.");
+		}
 	}
-	
+
 	@GetMapping("/{id}/discos")
 	@ResponseBody
-	@Operation(description = "Listar todos os discos de um pedido")
-	public List<Disco> listarDiscos(@PathVariable("id") Long id)  {
-		return pedidoService.ListarDiscoPeloIdCompra(id);
+	@Operation(summary = "Listar os discos do pedido de um cliente em específico")
+	public ResponseEntity<List<Disco>> listarDiscos(@PathVariable("id") Long id) {
+		try {
+			List<Disco> itens = pedidoService.listarDiscoPeloIdPedido(id);
+			return ResponseEntity.ok(itens);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
 	}
-	
-	@DeleteMapping("/{id}/discos")
+
+	@DeleteMapping("/{id}/disco")
 	@ResponseBody
-	@Operation(description = "Remover um disco de um pedido")
-	public String removeDisco(@PathVariable("id") String id, String titulo) {
-		return pedidoService.removeDisco(id, titulo);
+	@Operation(summary = "Deletar um disco do pedido em um cliente em específico")
+	public ResponseEntity<String> deletarDisco(@PathVariable("id") Long id, @RequestParam Long discoId) {
+		try {
+			String mensagem = pedidoService.deletarDisco(id, discoId);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar disco do pedido.");
+		}
 	}
-	
-//	@PatchMapping("/{id}")
-//	@ResponseBody
-//	@Operation(summary = "Finalizar uma compra em expecifíco")
-//	public String finalizarCompra(@PathVariable("id") Long id) throws Exception {
-//		return CompraServ.finalizarCompraPeloId(id);
-//	}
+
+	@PatchMapping("/{id}")
+	@ResponseBody
+	@Operation(summary = "Finalizar um pedido em específico")
+	public ResponseEntity<String> finalizarPedido(@PathVariable("id") Long id) {
+		try {
+			String mensagem = pedidoService.finalizarPedido(id);
+			return ResponseEntity.ok(mensagem);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao finalizar pedido.");
+		}
+	}
 
 }

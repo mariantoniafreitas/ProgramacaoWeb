@@ -14,129 +14,118 @@ import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-
 @MappedSuperclass
 public abstract class Pessoa implements Serializable {
 
-    protected static final long serialVersionUID = 1L;
+	protected static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Size(min=1,max=60,message="Tem que ter entre 1 e 60 caractéres")
+	@NotBlank(message = "O nome não pode ser em branco ou nulo")
+    @Size(min = 3, max = 60, message = "O nome deve conter entre 3 e 60 caracteres")
+    @Column(length = 60)
+	private String nome;
+
+	@Email(message = "O email deve ser válido")
+	@NotBlank(message = "O email não pode ser em branco ou nulo")
 	@Column(length = 60)
-    private String nome;
+	private String email;
 
-    @Email(message="Tem que ser em formato de email")
-	@Column(length = 60)
-    private String email;
+	@NotBlank(message = "O CPF não pode ser em branco ou nulo")
+	@Pattern(regexp = "\\d{11}", message = "O CPF deve conter exatamente 11 dígitos numéricos")
+	@Column(unique = true, length = 11)
+	private String cpf;
 
-    @NotBlank(message="Não pode ser em branco ou nulo")
-	@Pattern(regexp="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}", message="Deve seguir o padrão do CPF")
-	@Column(unique=true, length = 14)
-    private String cpf = " ";
+	@NotBlank(message = "O telefone não pode ser em branco ou nulo") 
+	@Pattern(regexp = "\\d{9,11}", message = "O telefone deve conter entre 9 e 11 dígitos numéricos")
+	@Column(unique = true, length = 14)
+	private String tel;
 
-    @NotBlank(message="Não pode ser em branco ou nulo")
-   	//@Pattern(regexp="\\([0-9]{2}\\) [0-9]{5}-[0-9]{4}", message="Deve seguir o padrão do CPF")
-   	@Column(unique=true, length = 14)
-    private String tel;
+	@Size(min = 20, max = 100, message = "O endereço deve conter entre 20 e 100 caracteres")
+    @NotBlank(message = "O endereço não pode ser em branco ou nulo")
+    @Column(length = 100)
+	private String endereco;
 
-    @Size(min=1,max=60,message="Tem que ter entre 1 e 60 caractéres")
-	@Column(length = 60)
-    private String endereco;
-    
-    @Size(min = 1, max = 20, message = "Tem que ter entre 1 e 20 caracteres")
-    @Column(length = 20)
-    //@Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "Formato de data de nascimento inválido. Use o formato yyyy-MM-dd")
-    private String dataNascimento;
-
-    
-    @Size(min=1,max=20,message="Tem que ter entre 1 e 20 caractéres")
+	@Size(min = 1, max = 20, message = "Tem que ter entre 1 e 20 caracteres")
 	@Column(length = 20)
-	private String senha;
+	private String dataNascimento;
 
-    @ManyToOne()
-	@JoinColumn(name="fk_pessoa")
+	@ManyToOne()
+	@JoinColumn(name = "fk_pessoa")
 	private Usuario usuario;
 
-    public Long getId() {
-        return id;
-    }
+	public Pessoa(String nome, String email, String cpf, String tel, String endereco, String dataNascimento) {
+		this.nome = nome;
+		this.email = email;
+		this.cpf = cpf;
+		this.tel = tel;
+		this.endereco = endereco;
+		this.dataNascimento = dataNascimento;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public Pessoa() {
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getCpf() {
-        return cpf;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public String getTel() {
-        return tel;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getEndereco() {
-        return endereco;
-    }
+	public String getCpf() {
+		return cpf;
+	}
 
-    public String getDataNascimento() {
-        return dataNascimento;
-    }
+	public String getTel() {
+		return tel;
+	}
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+	public String getEndereco() {
+		return endereco;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getDataNascimento() {
+		return dataNascimento;
+	}
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
-    }
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
 
-    public void setDataNascimento(String dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-    
-    public Usuario getUsuario() {
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
+
+	public void setDataNascimento(String dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
+
+	public Usuario getUsuario() {
 		return usuario;
 	}
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	
-	public String getSenha() {
-		return senha;
-	}
-	
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
-	
-	public Pessoa () {}
-    
-    public Pessoa(String nome, String email, String cpf, String tel, String senha, String endereco, String dataNascimento) {
-    	this.nome = nome;
-    	this.email = email;
-    	this.cpf = cpf; 
-    	this.tel = tel;
-    	this.senha = senha;
-    	this.endereco = endereco;
-    	this.dataNascimento = dataNascimento; 
-    }
+
 }

@@ -1,32 +1,42 @@
 package br.edu.iff.webapp.Entities;
 
-
 import java.io.Serializable;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
 
 @Entity
 public class Funcionario extends Pessoa implements Serializable {
 
-    @ManyToOne()
-	@JoinColumn(name="fk_cargo")
-    private Cargo cargo;
-    
-    public Funcionario() {}
-    
-    public Funcionario(String nome, String email, String cpf, String tel,String senha, String endereco, String dataNascimento) {
-    	super(nome, email, cpf, tel, senha, endereco, dataNascimento);
-    	
-    }
+	private static final long serialVersionUID = 1L;
 
-    public Cargo getCargo() {
-        return cargo;
-    }
+	private String cargo;
+	private double salario;
 
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
-    }
+	public Funcionario(String nome, String email, String cpf, String tel, String endereco, String dataNascimento,
+			String cargo, double salario) {
+		super(nome, email, cpf, tel, endereco, dataNascimento);
+		this.cargo = cargo;
+		this.salario = salario;
+	}
+
+	public Funcionario() {
+
+	}
+
+	public String getCargo() {
+		return cargo;
+	}
+
+	public void setCargo(String cargo) {
+		this.cargo = cargo;
+	}
+
+	public double getSalario() {
+		return salario;
+	}
+
+	public void setSalario(double salario) {
+		this.salario = salario;
+	}
+
 }
