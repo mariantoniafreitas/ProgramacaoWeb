@@ -4,6 +4,8 @@
 |:----:|:------:|:---------:|:---------:|
 | 23/10/2023 | 0.1 | Criação do documento | [Maria Antonia](https://github.com/mariantoniafreitas) |
 | 05/02/2024 | 0.2 | Remoção da Entidade Frete e Reorganização dos Atributos | [Maria Antonia](https://github.com/mariantoniafreitas) |
+| 19/02/2024 | 0.2 | Remoção de Entidades e Reorganização dos Atributos | [Maria Antonia](https://github.com/mariantoniafreitas) |
+
 
 ## Diagrama de classes
 
@@ -12,3 +14,7 @@
 
 #### *Versão 0.2*
 ![diagrama_de_classes](./Imagens/DiagramaDisco2.jpg)
+
+#### *Versão 0.3*
+![diagrama_de_classes](./Imagens/DiagramaDisco3.jpg)
+
