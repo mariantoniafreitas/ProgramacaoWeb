@@ -1,19 +1,22 @@
 package br.edu.iff.webapp.Controller.view;
 
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.edu.iff.webapp.Entities.Disco;
 import br.edu.iff.webapp.Service.DiscoService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @Controller
@@ -23,61 +26,86 @@ public class DiscoViewController {
 	@Autowired
 	private DiscoService discoService;
 
-	@GetMapping
-	public String listarDiscos(Model model) {
-		List<Disco> discos = discoService.listarDiscos();
-		model.addAttribute("discos", discos);
-		return "listarDiscos";
+	@GetMapping("")
+	public String page(Model model) throws Exception {
+		return "redirect:/disco/listarDiscos";
 	}
 
-	@GetMapping("/adicionar")
-	public String exibirFormularioAdicionar() {
-		return "adicionarDisco";
-	}
-
-	@PostMapping("/adicionar")
-	public String adicionarDisco(@Valid @RequestParam double valor, @Valid @RequestParam String titulo,
-			@Valid @RequestParam String interprete, @Valid @RequestParam String genero,
-			@Valid @RequestParam String gravadora, @Valid @RequestParam double tempo_duracao,
-			@Valid @RequestParam int total_musicas, BindingResult result, Model model) {
-		if (result.hasErrors()) {
-			return "adicionarDisco";
+	@GetMapping("/addForm")
+	public String addDiscoForm(Model model, HttpServletRequest request) throws Exception {
+		model.addAttribute("disco_add", new Disco());
+		String resposta = request.getParameter("resposta");
+		if (resposta != null) {
+			model.addAttribute("respostaAdd", URLDecoder.decode(resposta, "UTF-8"));
 		}
-
-		boolean resultado = discoService.adicionarDisco(valor, titulo, interprete, genero, gravadora, tempo_duracao,
-				total_musicas);
-		model.addAttribute("resultado", resultado);
-		return "redirect:/disco/adicionar";
+		return "CRUD_Disco";
 	}
 
-	@GetMapping("/editar/{id}")
-	public String exibirFormularioEditar(@PathVariable Long id, Model model) {
-		Disco disco = discoService.buscarPeloId(id);
-		model.addAttribute("disco", disco);
-		return "editarDisco";
-	}
-
-	@PostMapping("/editar/{id}")
-	public String editarDisco(@PathVariable Long id, @Valid @RequestParam double valor,
-			@Valid @RequestParam String titulo, @Valid @RequestParam String interprete,
-			@Valid @RequestParam String genero, @Valid @RequestParam String gravadora,
-			@Valid @RequestParam double tempo_duracao, @Valid @RequestParam int total_musicas, BindingResult result,
-			Model model) {
-		if (result.hasErrors()) {
-			return "editarDisco";
+	@PostMapping("/add")
+	public String addDisco(@Valid @ModelAttribute Disco disco, BindingResult resultado, Model model) {
+		if (resultado.hasErrors()) {
+			model.addAttribute("mensagemErro", resultado.getAllErrors());
+			return "";
+		} else {
+			boolean saida = discoService.adicionarDisco(disco.getValor(), disco.getTitulo(), disco.getInterprete(), disco.getGenero(), disco.getGravadora(), disco.getTempoDuracao(), disco.getTotalMusicas());
+			String resposta = saida ? "Disco adicionado com sucesso." : "Disco já cadastrado com esse título.";
+			try {
+				return "redirect:/disco/addForm?resposta=" + URLEncoder.encode(resposta, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				return "";
+			}
 		}
-
-		String mensagem = discoService.atualizarDisco(id, valor, titulo, interprete, genero, gravadora, tempo_duracao,
-				total_musicas);
-		model.addAttribute("mensagem", mensagem);
-		return "redirect:/disco/editar/" + id;
 	}
 
-	@GetMapping("/excluir/{id}")
-	public String excluirDisco(@PathVariable Long id, Model model) {
-		String mensagem = discoService.deletarDisco(id);
-		model.addAttribute("mensagem", mensagem);
-		return "redirect:/disco/excluir/" + id;
+	@GetMapping("/listarDiscos")
+	public String listarDiscos(Model model, HttpServletRequest request) throws Exception {
+		String titulo = request.getParameter("titulo");
+		if (titulo == null) {
+			model.addAttribute("disco_lista", discoService.listarDiscos());
+		} else {
+			Disco disco = discoService.buscarPeloTitulo(URLDecoder.decode(titulo, "UTF-8"));
+			if (disco == null) {
+				disco = new Disco();
+			}
+			model.addAttribute("disco_lista", disco);
+		}
+		return "CRUD_Disco";
+	}
+
+	@PostMapping("/buscaTitulo")
+	public String buscarDiscos(String titulo) throws Exception {
+		return "redirect:/disco/listarDiscos?titulo=" + URLEncoder.encode(titulo, "UTF-8");
+	}
+
+	@GetMapping("/editar")
+	public String formEditar(@RequestParam Long id, Model model) throws Exception {
+		model.addAttribute("livro_edit", discoService.buscarPeloId(id));
+		return "CRUD_Disco";
+	}
+
+	@PostMapping("/atualizar")
+	public String atualizarDisco(@Valid @ModelAttribute Disco disco, BindingResult resultado, Model model) {
+		String interprete = disco.getInterprete();
+		String titulo = disco.getTitulo();
+		String genero = disco.getGenero();
+		String gravadora = disco.getGravadora();
+		double tempoDuracao = disco.getTempoDuracao();
+		int qtdMusicas = disco.getTotalMusicas();
+		double valor = disco.getValor();
+		if (resultado.hasErrors()) {
+			model.addAttribute("mensagemErro", resultado.getAllErrors());
+			return "";
+		} else {
+			discoService.atualizarDisco(discoService.buscarPeloTitulo(titulo).getId(), valor, titulo, interprete, genero, gravadora, tempoDuracao, qtdMusicas);
+			return "redirect:/disco/listarDiscos";
+		}
+	}
+
+	@GetMapping("/deletaPorTitulo")
+	public String deletarDiscoTitulo(String titulo) throws Exception {
+		discoService.deletarDisco(discoService.buscarPeloTitulo(titulo).getId());
+		return "redirect:/disco/listarDiscos";
 	}
 
 }

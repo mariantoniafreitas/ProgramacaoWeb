@@ -71,5 +71,9 @@ public class DiscoService {
 	public Disco buscarPeloId(Long id) {
 		return DiscoRepository.buscarPeloId(id);
 	}
+	
+	public Disco buscarPeloTitulo(String titulo) {
+		return DiscoRepository.buscarPeloTitulo(titulo);
+	}
 
 }

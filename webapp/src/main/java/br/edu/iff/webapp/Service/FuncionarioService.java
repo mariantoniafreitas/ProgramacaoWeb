@@ -90,5 +90,10 @@ public class FuncionarioService {
 	public Funcionario buscarPeloId(Long id) {
 		return FuncionarioRepository.buscarPeloId(id);
 	}
+	
+	public Funcionario buscarPorLogin(String login) {
+        return FuncionarioRepository.buscarPorLogin(login);
+    }
+	
 
 }

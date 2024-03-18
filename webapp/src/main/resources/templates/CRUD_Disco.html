@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<div th:replace="~{controle :: import}"></div>
+	<title>CRUD disco</title>
+</head>
+<style>
+	table,
+	th,
+	td {
+		border: 1px solid black;
+		text-align: center;
+	}
+</style>
+
+<body>
+
+
+	<div th:replace="~{controle :: header}"></div>
+	<div class="row">
+		<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+
+			<div th:replace="~{controle :: sidebar}"></div>
+			<div th:replace="~{controle :: icones}"></div>
+
+		</div>
+		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+			<div th:if="${disco_add != null}">
+				<script th:inline="javascript">
+					document.addEventListener('DOMContentLoaded', function () {
+						document.getElementById('tituloAdd').value = '';
+					});
+				</script>
+				<h1>Registrar disco</h1>
+				<form action="#" th:action="@{/disco/add}" th:object="${disco_add}" method="post">
+					<fieldset>
+						<legend>Insira os valores</legend>
+						<p>
+							<label for="Valor">Novo valor</label> <input type="number" name="valor" id="valor"
+								th:value="*{valor}" min="1" />
+						</p>
+						<p>
+							<label for="Titulo">Título</label> <input type="text" name="titulo" id="titulo"
+								th:value="*{titulo}" required />
+						</p>
+						<p>
+							<label for="Interprete">Novo interprete</label> <input type="text" name="interprete" id="interprete"
+								th:value="*{interprete}" />
+						</p>
+
+						<p>
+							<label for="Genero">Novo gênero</label> <input type="text" name="genero" id="genero"
+								th:value="*{genero}" />
+						</p>
+						<p>
+							<label for="Gravadora">Nova gravadora</label> <input type="text" name="gravadora" id="gravadora"
+								th:value="*{genero}" />
+						</p>
+						<p>
+							<label for="tempoDuracao">Novo tempo de duração</label> <input type="number"
+								name="tempoDuracao" id="tempoDuracao" th:value="*{tempoDuracao}" min="1" />
+						</p>
+						<p>
+							<label for="totalMusicas">Novo total de músicas</label> <input type="number"
+								name="totalMusicas" id="totalMusicas" th:value="*{totalMusicas}" min="1" />
+						</p>
+						<p>
+							<button type="submit">Registrar</button>
+						</p>
+
+					</fieldset>
+				</form>
+				<div th:if="${respostaAdd != null}">
+					<span th:text="${respostaAdd}"></span>
+				</div>
+
+			</div>
+
+			<div th:if="${disco_lista != null}">
+				<h2>Buscar disco</h2>
+				<form th:action="@{/disco/buscaTitulo}" method="post">
+					<p>
+						<label for="titulo">Titulo</label> <input type="text" name="titulo" id="titulo" required />
+
+						<button type="submit">Buscar</button>
+					</p>
+				</form>
+
+				<h1>Lista de discos</h1>
+				<table>
+					<tr>
+						<th>Id</th>
+						<th>Valor</th>
+						<th>Título</th>
+						<th>Interprete</th>
+						<th>Gênero</th>
+						<th>Gravadora</th>
+						<th>Tempo de Duração</th>
+						<th>Total de Músicas</th>
+					</tr>
+					<tr th:each="disco : ${disco_lista}" th:if="${disco.titulo != null}">
+						<td th:text="${disco.id}"></td>
+						<td th:text="${disco.valor}"></td>
+						<td th:text="${disco.titulo}"></td>
+						<td th:text="${disco.interprete}"></td>
+						<td th:text="${disco.genero}"></td>
+						<td th:text="${disco.gravadora}"></td>
+						<td th:text="${disco.tempoDuracao}"></td>
+						<td th:text="${disco.totalMusicas}"></td>
+						<td>
+							<button>
+								<a th:href="@{/disco/editar(id=${disco.id})}">Editar</a>
+							</button>
+							<button>
+								<a th:href="@{/disco/deletaPorTitulo(titulo=${disco.titulo})}">Excluir</a>
+							</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div th:if="${disco_edit != null}">
+
+				<h1>Atualizar disco</h1>
+				<form action="#" th:action="@{/disco/atualizar}" th:object="${disco_edit}" method="post">
+					<fieldset>
+						<legend>Insira os valores</legend>
+						<p>
+							<label for="Valor">Novo valor</label> <input type="number" name="valor" id="valor"
+								th:value="*{valor}" min="1" />
+						</p>
+						<p>
+							<label for="Titulo">Título</label> <input type="text" name="titulo" id="titulo"
+								th:value="*{titulo}" required />
+						</p>
+						<p>
+							<label for="Interprete">Novo interprete</label> <input type="text" name="interprete" id="interprete"
+								th:value="*{interprete}" />
+						</p>
+
+						<p>
+							<label for="Genero">Novo gênero</label> <input type="text" name="genero" id="genero"
+								th:value="*{genero}" />
+						</p>
+						<p>
+							<label for="Gravadora">Nova gravadora</label> <input type="text" name="gravadora" id="gravadora"
+								th:value="*{genero}" />
+						</p>
+						<p>
+							<label for="tempoDuracao">Novo tempo de duração</label> <input type="number"
+								name="tempoDuracao" id="tempoDuracao" th:value="*{tempoDuracao}" min="1" />
+						</p>
+						<p>
+							<label for="totalMusicas">Novo total de músicas</label> <input type="number"
+								name="totalMusicas" id="totalMusicas" th:value="*{totalMusicas}" min="1" />
+						</p>
+						<p>
+							<button type="submit">Atulizar</button>
+						</p>
+
+					</fieldset>
+				</form>
+
+			</div>
+		</main>
+	</div>
+</body>
+
+</html>

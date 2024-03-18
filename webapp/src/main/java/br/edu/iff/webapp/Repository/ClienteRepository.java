@@ -22,5 +22,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 	
 	@Query(value = "SELECT * FROM CLIENTE", nativeQuery = true)
 	List<Cliente> listarClientes();
+	
+    @Query(value = "SELECT * FROM Cliente WHERE fk_pessoa = (SELECT id FROM Usuario WHERE login = :login)", nativeQuery = true)
+    Cliente buscarPorLogin(String login);
 }
 

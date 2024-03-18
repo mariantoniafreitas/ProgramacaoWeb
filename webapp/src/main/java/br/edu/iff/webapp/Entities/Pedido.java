@@ -18,7 +18,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
 
@@ -31,16 +30,15 @@ public class Pedido implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@NotNull(message = "A data do pedido não pode ser nula")
 	@PastOrPresent(message = "Não pode ser no futuro")
 	@Temporal(TemporalType.TIMESTAMP)
-	private LocalDateTime data_hora;
+	private LocalDateTime dataHora;
 
 	@PositiveOrZero(message = "Tem que ser maior ou igual a 0")
 	private double frete;
 
 	@PositiveOrZero(message = "Tem que ser maior ou igual a 0")
-	private double total_pedido;
+	private double totalPedido;
 
 	private boolean concluido;
 
@@ -68,11 +66,11 @@ public class Pedido implements Serializable {
 	}
 
 	public double getTotalPedido() {
-		return total_pedido;
+		return totalPedido;
 	}
 
 	public void setTotalPedido(double totalPedido) {
-		this.total_pedido = totalPedido;
+		this.totalPedido = totalPedido;
 	}
 
 	public double getFrete() {
@@ -93,13 +91,13 @@ public class Pedido implements Serializable {
 
 	public void adicionarDisco(Disco disco) {
 		this.discos.add(disco);
-		this.total_pedido += disco.getValor();
+		this.totalPedido += disco.getValor();
 		disco.setPedido(this);
 	}
 
 	public void deletarDisco(Disco disco) {
 		this.discos.remove(disco);
-		this.total_pedido -= disco.getValor();
+		this.totalPedido -= disco.getValor();
 		disco.setPedido(null);
 	}
 
@@ -111,21 +109,21 @@ public class Pedido implements Serializable {
 		this.cliente = cliente;
 	}
 
-	public void concluirPedido() {
+	public void concluido() {
 		this.concluido = true;
-		this.data_hora = LocalDateTime.now();
+		this.dataHora = LocalDateTime.now();
 	}
 
 	public boolean isConcluido() {
 		return this.concluido;
 	}
 
-	public LocalDateTime getData_hora() {
-		return data_hora;
+	public LocalDateTime getDataHora() {
+		return dataHora;
 	}
 
-	public void setData_hora(LocalDateTime data_hora) {
-		this.data_hora = data_hora;
+	public void setDataHora(LocalDateTime dataHora) {
+		this.dataHora = dataHora;
 	}
 
 }

@@ -90,4 +90,10 @@ public class ClienteService {
 	public Cliente buscarPeloId(Long id) {
 		return ClienteRepository.buscarPeloId(id);
 	}
+	
+	public Cliente buscarPorLogin(String login) {
+        return ClienteRepository.buscarPorLogin(login);
+    }
+	
+	
 }

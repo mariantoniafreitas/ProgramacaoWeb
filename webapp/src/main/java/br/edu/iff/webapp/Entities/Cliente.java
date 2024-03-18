@@ -44,5 +44,13 @@ public class Cliente extends Pessoa implements Serializable {
 	public void deletarPedido(Pedido pedido) {
 		this.pedido.remove(pedido);
 	}
+	
+	public List<Pedido> getPedido() {
+		return pedido;
+	}
+
+	public void setPedido(List<Pedido> pedido) {
+		this.pedido = pedido;
+	}
 
 }

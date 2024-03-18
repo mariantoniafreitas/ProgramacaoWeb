@@ -1,6 +1,8 @@
 package br.edu.iff.webapp.Controller.view;
 
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import br.edu.iff.webapp.Entities.Cliente;
 import br.edu.iff.webapp.Service.ClienteService;
+import br.edu.iff.webapp.Service.UsuarioService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @Controller
@@ -16,60 +20,155 @@ import jakarta.validation.Valid;
 public class ClienteViewController {
 
 	@Autowired
-	private ClienteService clienteService;
+	public UsuarioService usuarioService;
 
-	@GetMapping
-	public String listarClientes(Model model) {
-		List<Cliente> clientes = clienteService.listarClientes();
-		model.addAttribute("clientes", clientes);
-		return "listarClientes";
+	@Autowired
+	public ClienteService clienteService;
+
+	@GetMapping("/CRUD")
+	public String index() throws Exception {
+		return "redirect:/cliente/CRUD/listarClientes";
 	}
 
-	@GetMapping("/adicionar")
-	public String exibirFormularioAdicionar() {
-		return "adicionarCliente";
-	}
-
-	@PostMapping("/adicionar")
-	public String adicionarCliente(@Valid @RequestParam String login, @Valid @RequestParam String senha,
-			@Valid @RequestParam String nome, @Valid @RequestParam String email, @Valid @RequestParam String cpf,
-			@Valid @RequestParam String tel, @Valid @RequestParam String endereco, @RequestParam String dataNascimento,
-			BindingResult result, Model model) {
-		if (result.hasErrors()) {
-			return "adicionarCliente";
+	@GetMapping("/CRUD/addForm")
+	public String addClienteForm(Model model, HttpServletRequest request) throws Exception {
+		model.addAttribute("cliente_add", new Cliente());
+		String resposta = request.getParameter("resposta");
+		if (resposta != null) {
+			model.addAttribute("respostaAdd", URLDecoder.decode(resposta, "UTF-8"));
 		}
-
-		String mensagem = clienteService.adicionarCliente(login, senha, nome, email, cpf, tel, endereco,
-				dataNascimento);
-		model.addAttribute("mensagem", mensagem);
-		return "redirect:/cliente/adicionar";
+		return "CRUD_Cliente";
 	}
 
-	@GetMapping("/editar/{id}")
-	public String exibirFormularioEditar(@PathVariable Long id, Model model) {
+	@PostMapping("/CRUD/add")
+	public String addCliente(@RequestParam("login") String login, @RequestParam("senha") String senha,
+			@Valid @ModelAttribute Cliente cliente, BindingResult resultado, Model model) {
+		if (resultado.hasErrors()) {
+			model.addAttribute("mensagemErro", resultado.getAllErrors());
+			return "error";
+		} else {
+			String resposta = clienteService.adicionarCliente(login, senha, cliente.getNome(), cliente.getEmail(),
+					cliente.getCpf(), cliente.getTel(), cliente.getEndereco(), cliente.getDataNascimento());
+			try {
+				return "redirect:/cliente/CRUD/addForm?resposta=" + URLEncoder.encode(resposta, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				return "error";
+			}
+		}
+	}
+
+	@GetMapping("/CRUD/listarClientes")
+	public String listarClientes(Model model, HttpServletRequest request) throws Exception {
+		String cpf = request.getParameter("cpf");
+		if (cpf == null) {
+			model.addAttribute("cliente_lista", clienteService.listarClientes());
+		} else {
+			Cliente cliente = clienteService.buscarClienteCPF(cpf);
+			if (cliente == null) {
+				cliente = new Cliente();
+			}
+			model.addAttribute("cliente_lista", cliente);
+		}
+		return "CRUD_Cliente";
+	}
+
+	@PostMapping("/CRUD/buscaCPF")
+	public String buscarClienteCPF(String cpf) throws Exception {
+		return "redirect:/cliente/CRUD/listarClientes?cpf=" + URLEncoder.encode(cpf, "UTF-8");
+	}
+
+	@GetMapping("/CRUD/editar")
+	public String formEditar(@RequestParam Long id, Model model) throws Exception {
 		Cliente cliente = clienteService.buscarPeloId(id);
-		model.addAttribute("cliente", cliente);
-		return "editarCliente";
+		model.addAttribute("cliente_edit", cliente);
+		return "CRUD_Cliente";
 	}
 
-	@PostMapping("/editar/{id}")
-	public String editarCliente(@PathVariable Long id, @Valid @RequestParam String nome,
-			@Valid @RequestParam String email, @Valid @RequestParam String cpf, @Valid @RequestParam String tel,
-			@Valid @RequestParam String endereco, @RequestParam String dataNascimento, BindingResult result,
-			Model model) {
-		if (result.hasErrors()) {
-			return "editarCliente";
+	@PostMapping("/CRUD/atualizar")
+	public String atualizarCliente(@RequestParam("login") String login, @RequestParam("senha") String senha,
+			@Valid @ModelAttribute Cliente cliente, BindingResult resultado, Model model) {
+		String nome = cliente.getNome();
+		String email = cliente.getEmail();
+		String cpf = cliente.getCpf();
+		String tel = cliente.getTel();
+		String endereco = cliente.getEndereco();
+		String dataNascimento = cliente.getDataNascimento();
+		if (resultado.hasErrors()) {
+			model.addAttribute("mensagemErro", resultado.getAllErrors());
+			return "error";
+		} else {
+			clienteService.atualizarCliente(clienteService.buscarClienteCPF(cpf).getId(), nome, email, cpf, tel,
+					endereco, dataNascimento);
+			if (!login.isEmpty() || !senha.isEmpty()) {
+				usuarioService.atualizarUsuario(clienteService.buscarClienteCPF(cpf).getUsuario().getId(), login, senha,
+						0);
+			}
 		}
-
-		String mensagem = clienteService.atualizarCliente(id, nome, email, cpf, tel, endereco, dataNascimento);
-		model.addAttribute("mensagem", mensagem);
-		return "redirect:/cliente/editar/" + id;
+		return "CRUD_Cliente";
 	}
 
-	@GetMapping("/excluir/{id}")
-	public String excluirCliente(@PathVariable Long id, Model model) {
-		String mensagem = clienteService.deletarCliente(id);
-		model.addAttribute("mensagem", mensagem);
-		return "redirect:/cliente/excluir/" + id;
+	@GetMapping("/CRUD/deletePorCPF")
+	public String deletarClienteCPF(String cpf) throws Exception {
+		clienteService.deletarCliente(clienteService.buscarClienteCPF(cpf).getId());
+		return "redirect:/cliente/CRUD/listarClientes";
+	}
+
+	@GetMapping("/editarPerfil/{id}")
+	public String editarPerfil(@PathVariable("id") Long id, Model model) throws Exception {
+		Cliente cliente = clienteService.buscarPeloId(id);
+		model.addAttribute("cliente_edit", cliente);
+		return "editarPerfil";
+	}
+
+	@PostMapping("/editarPerfil/atualizarValoresPerfil")
+	public String atualizarValoresPerfil(@RequestParam("login") String login, @RequestParam("senha") String senha,
+			@Valid @ModelAttribute Cliente cliente, BindingResult resultado, Model model) {
+		String nome = cliente.getNome();
+		String email = cliente.getEmail();
+		String cpf = cliente.getCpf();
+		String tel = cliente.getTel();
+		String endereco = cliente.getEndereco();
+		String dataNascimento = cliente.getDataNascimento();
+		if (resultado.hasErrors()) {
+			model.addAttribute("mensagemErro", resultado.getAllErrors());
+			return "error";
+		} else {
+			clienteService.atualizarCliente(clienteService.buscarClienteCPF(cpf).getId(), nome, email, cpf, tel,
+					endereco, dataNascimento);
+			if (!login.isEmpty() || !senha.isEmpty()) {
+				usuarioService.atualizarUsuario(clienteService.buscarClienteCPF(cpf).getUsuario().getId(), login, senha,
+						0);
+			}
+			return "redirect:/cliente/editarPerfil/" + clienteService.buscarClienteCPF(cpf).getId();
+		}
+	}
+
+	@GetMapping("/cadastro")
+	public String cadastroForm(Model model, HttpServletRequest request) throws Exception {
+		model.addAttribute("cliente_add", new Cliente());
+		String resposta = request.getParameter("resposta");
+		if (resposta != null) {
+			model.addAttribute("respostaAdd", URLDecoder.decode(resposta, "UTF-8"));
+		}
+		return "cadastro";
+	}
+
+	@PostMapping("/cadastro/add")
+	public String addCadastro(@RequestParam("login") String login, @RequestParam("senha") String senha,
+			@Valid @ModelAttribute Cliente cliente, BindingResult resultado, Model model) {
+		if (resultado.hasErrors()) {
+			model.addAttribute("mensagemErro", resultado.getAllErrors());
+			return "error";
+		} else {
+			String resposta = clienteService.adicionarCliente(login, senha, cliente.getNome(), cliente.getEmail(),
+					cliente.getCpf(), cliente.getTel(), cliente.getEndereco(), cliente.getDataNascimento());
+			try {
+				return "redirect:/cliente/cadastro?resposta=" + URLEncoder.encode(resposta, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+				return "error";
+			}
+		}
 	}
 }

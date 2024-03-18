@@ -56,7 +56,7 @@ public class PedidoService {
 						return "Cliente não encontrado";
 					} else {
 						if (data_hora != null) {
-							pedido.setData_hora(data_hora);
+							pedido.setDataHora(data_hora);
 						}
 						if (total_pedido > 0) {
 							pedido.setTotalPedido(total_pedido);
@@ -174,7 +174,7 @@ public class PedidoService {
 				if (p.getDiscos().size() == 0) {
 					return "O pedido precisa ter no mínimo 1 disco.";
 				} else {
-					p.concluirPedido();
+					p.concluido();
 					PedidoRepository.saveAndFlush(p);
 					ClienteRepository.flush();
 					return "Pedido finalizado com sucesso.";

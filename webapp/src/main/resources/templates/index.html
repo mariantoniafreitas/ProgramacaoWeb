@@ -145,23 +145,39 @@
 
     <main>
       <div class="row row-cols-1 row-cols-md-3 mb-3 text-center" >
-        <div class="col" th:fragment="exibe_discos">
-          <div class="card mb-4 rounded-3 shadow-sm">
-            <div class="card-header py-3">
-              <h4 class="my-0 fw-normal"><span th:text="${disco.titulo}"></h4>
-            </div>
-            <div class="card-body">
-              <h1 class="card-title pricing-card-title"><span th:text="${disco.valor}"></h1>
-              <ul class="list-unstyled mt-3 mb-4">
-                <li>Gênero <span th:text="${disco.genero}"></li>
-                <li>Total de músicas <span th:text="${disco.totalMusicas}"></li>
-                <li>Gravadora <span th:text="${disco.gravadora}"></li>
-              </ul>
-              <button type="button" class="w-100 btn btn-lg btn-outline-primary">Comprar</button>
-            </div>
-          </div>
+        <div th:each="disco : ${disco_lista}" th:if="${disco.titulo != null}">
+                    <div th:insert="~{layout-base :: exibe_discos}"></div>
         </div>
       </div>
+          <div class="modal fade" id="telaLogin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><strong>Login</strong></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form style="text-align: center;" th:action="@{/login}" method="post">
+                    <div class="modal-body">
+                        <p>
+                            <label for="login">Login</label> <input type="text" name="username" id="username"
+                                required />
+                        </p>
+                        <p>
+                            <label for="senha">Senha</label> <input type="password" name="password" id="password"
+                                required />
+                        </p>
+                        <input name="_csrf" type="hidden"
+                            value="28Jd3Vfmk1LoCgZ0LV-XZfjGACRjws9vh1XuqeLRKcz8bz_u6vJl7GfUq2PFbz4VGnKjAZmgLR0Gp65Cvmfemtq0Ga_ODl3Z">
+                    </div>
+                    <p>
+                        <button class="btn btn-success rounded-pill px-3" type="submit">Login</button>
+                        <button type="button" class="btn btn-danger rounded-pill px-3"
+                            data-bs-dismiss="modal">Fechar</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
     </main>
     <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
   </div>
