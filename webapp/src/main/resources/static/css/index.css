@@ -1,0 +1,24 @@
+body {
+	background-image: linear-gradient(180deg, #f7c689, var(--bs-body-bg) 100px, var(--bs-body-bg));
+	background-repeat: no-repeat;
+}
+
+.card-body {
+	/*background: url("https://cdn.pixabay.com/photo/2019/03/08/21/13/vinyl-record-4043223_1280.jpg"); */
+}
+
+.container {
+	max-width: 1200px;
+}
+
+div.page-wallpaper {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	
+	img {
+		padding: 0;
+		margin: 0;
+		width: 100%;
+	}
+}

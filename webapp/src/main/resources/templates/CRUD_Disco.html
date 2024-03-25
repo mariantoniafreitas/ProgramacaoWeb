@@ -5,165 +5,178 @@
 	<meta charset="UTF-8">
 	<div th:replace="~{controle :: import}"></div>
 	<title>CRUD disco</title>
+	<link rel="stylesheet" th:href="@{/css/CRUD_page.css}">
+	<link rel="stylesheet" th:href="@{/css/toolbar-dropdown.css}">
 </head>
-<style>
-	table,
-	th,
-	td {
-		border: 1px solid black;
-		text-align: center;
-	}
-</style>
 
 <body>
-
-
+	<!-- Header -->
 	<div th:replace="~{controle :: header}"></div>
-	<div class="row">
-		<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-
-			<div th:replace="~{controle :: sidebar}"></div>
-			<div th:replace="~{controle :: icones}"></div>
-
-		</div>
-		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+	
+	<div class="row mx-0">
+	<main class="col-12 px-md-4">
+			<!-- ADD -->
 			<div th:if="${disco_add != null}">
 				<script th:inline="javascript">
 					document.addEventListener('DOMContentLoaded', function () {
 						document.getElementById('tituloAdd').value = '';
 					});
 				</script>
+				
 				<h1>Registrar disco</h1>
+				
 				<form action="#" th:action="@{/disco/add}" th:object="${disco_add}" method="post">
-					<fieldset>
-						<legend>Insira os valores</legend>
-						<p>
-							<label for="Valor">Novo valor</label> <input type="number" name="valor" id="valor"
-								th:value="*{valor}" min="1" />
-						</p>
-						<p>
-							<label for="Titulo">Título</label> <input type="text" name="titulo" id="titulo"
-								th:value="*{titulo}" required />
-						</p>
-						<p>
-							<label for="Interprete">Novo interprete</label> <input type="text" name="interprete" id="interprete"
-								th:value="*{interprete}" />
-						</p>
-
-						<p>
-							<label for="Genero">Novo gênero</label> <input type="text" name="genero" id="genero"
-								th:value="*{genero}" />
-						</p>
-						<p>
-							<label for="Gravadora">Nova gravadora</label> <input type="text" name="gravadora" id="gravadora"
-								th:value="*{genero}" />
-						</p>
-						<p>
-							<label for="tempoDuracao">Novo tempo de duração</label> <input type="number"
-								name="tempoDuracao" id="tempoDuracao" th:value="*{tempoDuracao}" min="1" />
-						</p>
-						<p>
-							<label for="totalMusicas">Novo total de músicas</label> <input type="number"
-								name="totalMusicas" id="totalMusicas" th:value="*{totalMusicas}" min="1" />
-						</p>
-						<p>
-							<button type="submit">Registrar</button>
-						</p>
-
-					</fieldset>
+				  <div class="form-group mb-2">
+				    <label for="valor">Valor</label>
+				    <input type="number" step="0.01" class="form-control" name="valor" id="valor" placeholder="Ex.: 250,00" th:value="*{valor}" min="1">
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="titulo">Título</label>
+				    <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Ex.: Reputation" th:value="*{titulo}" required>
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="interprete">Interprete</label>
+				    <input type="text" class="form-control" name="interprete" id="interprete" placeholder="Ex.: Taylor Swift" th:value="*{interprete}">
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="genero">Gênero</label>
+				    <input type="text" class="form-control" name="genero" id="genero" placeholder="Ex.: Electropop" th:value="*{genero}">
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="gravadora">Gravadora</label>
+				    <input type="text" class="form-control" name="gravadora" id="gravadora" placeholder="Ex.: Universal" th:value="*{gravadora}">
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="tempoDuracao">Tempo de duração</label>
+				    <input type="text" class="form-control" name="tempoDuracao" id="tempoDuracao" placeholder="Ex.: 180.3" th:value="*{tempoDuracao}" min="1">
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="totalMusicas">Total de músicas</label>
+				    <input type="text" class="form-control" name="totalMusicas" id="totalMusicas" placeholder="Ex.: 14" th:value="*{totalMusicas}" min="1">
+				  </div>
+				  
+				  <button type="submit" class="btn my-3 btn-primary">Registrar</button>
 				</form>
+				
 				<div th:if="${respostaAdd != null}">
 					<span th:text="${respostaAdd}"></span>
 				</div>
-
 			</div>
 
+
+			<!-- LIST -->
 			<div th:if="${disco_lista != null}">
 				<h2>Buscar disco</h2>
-				<form th:action="@{/disco/buscaTitulo}" method="post">
-					<p>
-						<label for="titulo">Titulo</label> <input type="text" name="titulo" id="titulo" required />
-
-						<button type="submit">Buscar</button>
-					</p>
-				</form>
-
-				<h1>Lista de discos</h1>
-				<table>
-					<tr>
-						<th>Id</th>
-						<th>Valor</th>
-						<th>Título</th>
-						<th>Interprete</th>
-						<th>Gênero</th>
-						<th>Gravadora</th>
-						<th>Tempo de Duração</th>
-						<th>Total de Músicas</th>
-					</tr>
-					<tr th:each="disco : ${disco_lista}" th:if="${disco.titulo != null}">
-						<td th:text="${disco.id}"></td>
-						<td th:text="${disco.valor}"></td>
-						<td th:text="${disco.titulo}"></td>
-						<td th:text="${disco.interprete}"></td>
-						<td th:text="${disco.genero}"></td>
-						<td th:text="${disco.gravadora}"></td>
-						<td th:text="${disco.tempoDuracao}"></td>
-						<td th:text="${disco.totalMusicas}"></td>
-						<td>
-							<button>
+				
+				<nav class="navbar navbar-light bg-light">
+				  <form class="form-inline d-flex ps-2" th:action="@{/disco/buscaTitulo}" method="post">
+				    <input class="form-control mr-sm-2" type="text" name="titulo" id="titulo" required placeholder="Título do disco..." aria-label="Search">
+				    <button class="btn btn-outline-success ms-3 my-2 my-sm-0" type="submit">Buscar</button>
+				  </form>
+				</nav>
+				
+				<h1 class="mt-4">Lista de discos</h1>
+				
+				<table class="table">
+				  <thead class="thead-dark">
+				    <tr>
+				      <th scope="col">Id</th>
+				      <th scope="col">Valor</th>
+				      <th scope="col">Título</th>
+				      <th scope="col">Interprete</th>
+				      <th scope="col">Gênero</th>
+				      <th scope="col">Gravadora</th>
+				      <th scope="col">Tempo de Duração</th>
+				      <th scope="col">Total de Músicas</th>
+				      <th scope="col"></th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="disco : ${disco_lista}" th:if="${disco.titulo != null}">
+				      <td th:text="${disco.id}"></td>
+				      <td th:text="${disco.valor}"></td>
+				      <td th:text="${disco.titulo}"></td>
+				      <td th:text="${disco.interprete}"></td>
+				      <td th:text="${disco.genero}"></td>
+				      <td th:text="${disco.gravadora}"></td>
+				      <td th:text="${disco.tempoDuracao}"></td>
+				      <td th:text="${disco.totalMusicas}"></td>
+				      <td class="btn-actions">
+						  <button type="button" class="btn btn-warning">
 								<a th:href="@{/disco/editar(id=${disco.id})}">Editar</a>
 							</button>
-							<button>
+							<button type="button" class="btn btn-danger">
 								<a th:href="@{/disco/deletaPorTitulo(titulo=${disco.titulo})}">Excluir</a>
 							</button>
-						</td>
+					  </td>
+				    </tr>
+				    
+				    <tr th:if="${disco_lista.size == 0}">
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Nenhum disco foi registrado</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
 					</tr>
+				  </tbody>
 				</table>
 			</div>
 
+
+			<!-- EDIT -->
 			<div th:if="${disco_edit != null}">
-
 				<h1>Atualizar disco</h1>
+				
 				<form action="#" th:action="@{/disco/atualizar}" th:object="${disco_edit}" method="post">
-					<fieldset>
-						<legend>Insira os valores</legend>
-						<p>
-							<label for="Valor">Novo valor</label> <input type="number" name="valor" id="valor"
-								th:value="*{valor}" min="1" />
-						</p>
-						<p>
-							<label for="Titulo">Título</label> <input type="text" name="titulo" id="titulo"
-								th:value="*{titulo}" required />
-						</p>
-						<p>
-							<label for="Interprete">Novo interprete</label> <input type="text" name="interprete" id="interprete"
-								th:value="*{interprete}" />
-						</p>
-
-						<p>
-							<label for="Genero">Novo gênero</label> <input type="text" name="genero" id="genero"
-								th:value="*{genero}" />
-						</p>
-						<p>
-							<label for="Gravadora">Nova gravadora</label> <input type="text" name="gravadora" id="gravadora"
-								th:value="*{genero}" />
-						</p>
-						<p>
-							<label for="tempoDuracao">Novo tempo de duração</label> <input type="number"
-								name="tempoDuracao" id="tempoDuracao" th:value="*{tempoDuracao}" min="1" />
-						</p>
-						<p>
-							<label for="totalMusicas">Novo total de músicas</label> <input type="number"
-								name="totalMusicas" id="totalMusicas" th:value="*{totalMusicas}" min="1" />
-						</p>
-						<p>
-							<button type="submit">Atulizar</button>
-						</p>
-
-					</fieldset>
+					<div class="form-group mb-2">
+				    <label for="valor">Valor</label>
+				    <input type="number" step="0.01" class="form-control" name="valor" id="valor" placeholder="Ex.: 250,00" th:value="*{valor}" min="1">
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="titulo">Título</label>
+				    <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Ex.: Reputation" th:value="*{titulo}" required>
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="interprete">Interprete</label>
+				    <input type="text" class="form-control" name="interprete" id="interprete" placeholder="Ex.: Taylor Swift" th:value="*{interprete}">
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="genero">Gênero</label>
+				    <input type="text" class="form-control" name="genero" id="genero" placeholder="Ex.: Electropop" th:value="*{genero}">
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="gravadora">Gravadora</label>
+				    <input type="text" class="form-control" name="gravadora" id="gravadora" placeholder="Ex.: Universal" th:value="*{gravadora}">
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="tempoDuracao">Tempo de duração</label>
+				    <input type="text" class="form-control" name="tempoDuracao" id="tempoDuracao" placeholder="Ex.: 180.3" th:value="*{tempoDuracao}" min="1">
+				  </div>
+				  
+				  <div class="form-group mb-2">
+				    <label for="totalMusicas">Total de músicas</label>
+				    <input type="text" class="form-control" name="totalMusicas" id="totalMusicas" placeholder="Ex.: 14" th:value="*{totalMusicas}" min="1">
+				  </div>
+				  
+				  <button type="submit" class="btn my-3 btn-primary">Atualizar</button>
 				</form>
-
 			</div>
+
 		</main>
 	</div>
 </body>

@@ -1,0 +1,58 @@
+/* Form row */ 
+.form-group {
+	label {
+		margin-bottom: 0.2rem;
+		font-weight: 500;
+	}
+}
+
+/* Table header dark */
+.table .thead-dark th {
+    color: #fff;
+    background-color: #212529;
+    border-color: #32383e;
+}
+
+/* Actions button */
+td.btn-actions {
+	button > a {
+		color: #fff;
+	}
+}
+
+/* Checkbox row */
+.form-check {
+	box-sizing: content-box;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	
+	border-radius: 15px;
+	background-color: #f7c689; /**/
+	padding: 0.5rem 1rem;
+}
+
+/* Checkbox input */
+input.form-check-input {
+	float: none !important; /* Bootstrap */
+	margin-left: 0 !important; /* Bootstrap */
+	
+	border: 2px solid black;
+	
+	margin-right: 1rem;
+}
+
+/* Checkbox label */
+.form-check-label {
+	display: flex;
+	flex-direction: column;
+}
+.form-check-label > span {
+	color: black;
+	font-weight: 500;
+}
+.form-check-label > span > i {
+	color: #000000db;
+	font-weight: 400;
+}

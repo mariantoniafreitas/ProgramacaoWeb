@@ -3,6 +3,7 @@ package br.edu.iff.webapp.Controller.view;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,16 +104,10 @@ public class PedidoViewController {
 	}
 
 	@PostMapping("/CRUD/atualizar")
-	public String atualizarPedido(Long id, @Valid @ModelAttribute Pedido pedido, BindingResult resultado, Model model) {
-		if (resultado.hasErrors()) {
-			model.addAttribute("mensagemErro", resultado.getAllErrors());
-			return "error";
-		} else {
-			pedidoService.atualizarPedido(id, pedido.getCliente().getId(), pedido.getDataHora(), pedido.getFrete(),
-					pedido.getTotalPedido());
-			return "redirect:/pedido/CRUD/editar?id=" + id;
-		}
-	}
+    public String atualizarPedido(@RequestParam("clienteId") Long clienteId,@RequestParam("pedidoId") Long pedidoId,@RequestParam("dataHora") LocalDateTime dataHora, @RequestParam("frete") double frete, @RequestParam("totalPedido") double totalPedido) {
+         pedidoService.atualizarPedido(pedidoId ,clienteId , dataHora, frete, totalPedido);
+            return "redirect:/pedido/CRUD/listarPedidos";
+    }
 
 	@GetMapping("/CRUD/deletar")
 	public String deletarPedido(@RequestParam Long id) throws Exception {
@@ -120,16 +115,16 @@ public class PedidoViewController {
 		return "redirect:/pedido/CRUD/listarPedidos";
 	}
 
-	@PostMapping("/CRUD/addItem")
-	public String addDisco(@RequestParam Long id, String titulo) throws Exception {
-		pedidoService.adicionarDisco(id, discoService.buscarPeloTitulo(titulo).getId());
-		return "redirect:/pedido/CRUD/editar?id=" + id;
+	@PostMapping("/CRUD/addDisco")
+	public String addDisco(@RequestParam("pedidoId") Long pedidoId, @RequestParam("titulo") String titulo) throws Exception {
+		pedidoService.adicionarDisco(pedidoId, discoService.buscarPeloTitulo(titulo).getId());
+		return "redirect:/pedido/CRUD/editar?id=" + pedidoId;
 	}
 
-	@GetMapping("/CRUD/removeItem")
-	public String removeDisco(@RequestParam Long id, Long itemId) throws Exception {
-		pedidoService.deletarDisco(id, itemId);
-		return "redirect:/pedido/CRUD/editar?id=" + id;
+	@GetMapping("/CRUD/removeDisco")
+	public String removeDisco(@RequestParam("discoId") Long discoId, @RequestParam("pedidoId") Long pedidoId) throws Exception {
+		pedidoService.deletarDisco(pedidoId, discoId);
+		return "redirect:/pedido/CRUD/editar?id=" + pedidoId;
 	}
 
 	@GetMapping("/CRUD/finalizar")
@@ -150,14 +145,14 @@ public class PedidoViewController {
 		return "carrinho";
 	}
 
-	@GetMapping("/carrinho/addItem")
+	@GetMapping("/carrinho/addDisco")
 	public String addDiscoCarrinho(Long id, String titulo) throws Exception {
 		pedidoService.adicionarDisco(id, discoService.buscarPeloTitulo(titulo).getId());
 		return "redirect:/";
 	}
 
-	@GetMapping("/carrinho/removeItem")
-	public String removeItem(@RequestParam Long id, Long itemId) throws Exception {
+	@GetMapping("/carrinho/removeDisco")
+	public String removeDisco1(@RequestParam Long id, Long itemId) throws Exception {
 		pedidoService.deletarDisco(id, itemId);
 		return "redirect:/pedido/carrinho/" + pedidoService.buscarPeloId(id).getCliente().getId();
 	}

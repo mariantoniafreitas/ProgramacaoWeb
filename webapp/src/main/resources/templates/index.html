@@ -22,6 +22,8 @@
 
   <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
+	<link th:href="@{/css/index.css}" rel="stylesheet">
+
   <style>
 	  
     .bd-placeholder-img {
@@ -101,8 +103,6 @@
       display: block !important;
     }
   </style>
-
-  <link href="pricing.css" rel="stylesheet">
 </head>
 
 <body>
@@ -129,10 +129,9 @@
         </a>
 
         <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-          <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Discos</a>
-          <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">Artistas</a>
-          <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="#">SALE</a>
-          <a class="py-2 link-body-emphasis text-decoration-none" href="#">Acessar/Cadastrar meu perfil</a>
+         <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="disco/listarDiscos">Discos</a>
+         <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="pedido/CRUD/listarPedidos">Pedidos</a>
+         <a class="py-2 link-body-emphasis text-decoration-none" href="cliente/CRUD/addForm">Acessar/Cadastrar meu perfil</a>
         </nav>
       </div>
 
@@ -141,12 +140,20 @@
         <p class="fs-5 text-body-secondary">Compre discos de vinil pelo melhor preço! Nossa loja contém diversos estilos
           musicais para atender todos os gostos. Qualquer dúvida entre em contato conosco!</p>
       </div>
+      
+      <div class="page-wallpaper row p-3">
+		<img src="https://vinils3.s3.amazonaws.com/wp-content/uploads/2022/11/01082136/Banner_MES-CONSUMIDOR-2024.jpg">
+	  </div>
     </header>
 
-    <main>
-      <div class="row row-cols-1 row-cols-md-3 mb-3 text-center" >
+    <main>	
+		<div class="row mt-5 mb-3 text-center">
+			<h1>Discos em destaque</h1>
+		</div>
+		
+      <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
         <div th:each="disco : ${disco_lista}" th:if="${disco.titulo != null}">
-                    <div th:insert="~{layout-base :: exibe_discos}"></div>
+        	<div th:insert="~{layout-base :: exibe_discos}"></div>
         </div>
       </div>
           <div class="modal fade" id="telaLogin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -5,182 +5,198 @@
 	<meta charset="UTF-8">
 	<div th:replace="~{controle :: import}"></div>
 	<title>CRUD Pedido</title>
+	<link rel="stylesheet" th:href="@{/css/CRUD_page.css}">
+	<link rel="stylesheet" th:href="@{/css/toolbar-dropdown.css}">
 </head>
-<style>
-	table,
-	th,
-	td {
-		border: 1px solid black;
-		text-align: center;
-	}
-</style>
 
 <body>
-
+	<!-- Header -->
 	<div th:replace="~{controle :: header}"></div>
-	<div class="row">
-		<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
 
+	<div class="row mx-0">
 
-			<div th:replace="~{controle :: sidebar}"></div>
-			<div th:replace="~{controle :: icones}"></div>
-
-		</div>
-		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+		<main class="col-12 px-md-4">
+			<!-- ADD -->
 			<div th:if="${pedido_add != null}">
 				<h1>Registrar um novo pedido</h1>
+				
 				<form action="#" th:action="@{/pedido/CRUD/add}" th:object="${pedido_add}" method="post">
 					<fieldset>
-						<legend>Escolha o cliente do Pedido</legend>
 						<div th:if="${#lists.isEmpty(cliente_lista)}">
-							<p>Nenhum cliente disponível no momento.</p>
+							<span>Nenhum cliente disponível no momento.</span>
 						</div>
 						<div th:unless="${#lists.isEmpty(cliente_lista)}">
-							<p>
-								<label for="cliente">Clientes:</label> <br />
-								<span th:each="clienteAtual : ${cliente_lista}">
-									<input type="radio" name="clienteEscolhido" th:value="${clienteAtual.id}"
-										required />
-									Nome: <span th:text="${clienteAtual.nome}"></span> | CPF: <span
-										th:text="${clienteAtual.cpf}"></span><br />
-								</span>
-							</p>
-							<p>
-								<button type="submit">Registrar</button>
-							</p>
+							<legend>Escolha o cliente do Pedido</legend>
+							
+							<div th:each="clienteAtual : ${cliente_lista}" class="form-check">
+							  <input class="form-check-input" type="radio" name="clienteEscolhido" th:value="${clienteAtual.id}" required>
+							  <label class="form-check-label" for="clienteEscolhido">
+							    <span>Nome: <i th:text="${clienteAtual.nome}"></i></span>
+							    <span>CPF:  <i th:text="${clienteAtual.cpf}"></i></span>
+							  </label>
+							</div>
 						</div>
-
+						
+						<button type="submit" class="btn my-3 btn-primary">Registrar</button>
 					</fieldset>
 				</form>
 				<div th:if="${respostaAdd != null}">
 					<span th:text="${respostaAdd}"></span>
 				</div>
-
 			</div>
-
+			
+		
+			<!-- LIST -->
 			<div th:if="${pedido_lista != null}">
 				<h2>Buscar Pedido</h2>
-				<form th:action="@{/pedido/CRUD/buscaPedido}" method="post">
-					<p>
-						<label for="cpf">CPF do Cliente</label> <input type="text" name="cpf" id="cpf" required />
-
-						<button type="submit">Buscar</button>
-					</p>
-				</form>
-
-				<h1>Lista de todos os Pedidos</h1>
-				<table>
-					<tr>
-						<th>Id</th>
-						<th>Total do Pedido</th>
-						<th>Quantidade de Discos</th>
-						<th>Está concluido</th>
-					</tr>
-					<tr th:each="pedido : ${pedido_lista}" th:if="${pedido.cliente != null}">
-						<td th:text="${pedido.id}"></td>
-						<td th:text="${pedido.totalPedido}"></td>
-						<td th:text="${pedido.discos.size()}"></td>
-						<td th:text="${pedido.concluido}"></td>
-						<td>
-							<button th:if="${pedido.concluido}==false">
+				
+				<nav class="navbar navbar-light bg-light">
+				  <form class="form-inline d-flex ps-2" th:action="@{/pedido/CRUD/buscaPedido}" method="post">
+				    <input class="form-control mr-sm-2" type="text" name="cpf" id="cpf" required placeholder="CPF do Cliente..." aria-label="Search">
+				    <button class="btn btn-outline-success ms-3 my-2 my-sm-0" type="submit">Buscar</button>
+				  </form>
+				</nav>
+				
+				<h1 class="mt-4">Lista de pedidos</h1>
+				
+				<table class="table">
+				  <thead class="thead-dark">
+				    <tr>
+				      <th scope="col">Id</th>
+				      <th scope="col">Data Hora</th>
+				      <th scope="col">Total do Pedido</th>
+				      <th scope="col">Quantidade de Discos</th>
+				      <th scope="col">Está concluido</th>
+				      <th scope="col"></th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="pedido : ${pedido_lista}" th:if="${pedido.cliente != null}">
+				      <td th:text="${pedido.id}"></td>
+				      <td th:text="${pedido.dataHora}"></td>
+				      <td th:text="${pedido.totalPedido}"></td>
+				      <td th:text="${pedido.discos.size()}"></td>
+				      <td th:text="${pedido.concluido}"></td>
+				      <td class="btn-actions">
+						  <button th:if="${pedido.concluido}==false" type="button" class="btn btn-warning">
 								<a th:href="@{/pedido/CRUD/editar(id=${pedido.id})}">Editar</a>
 							</button>
-							<button>
+							<button type="button" class="btn btn-danger">
 								<a th:href="@{/pedido/CRUD/deletar(id=${pedido.id})}">Excluir</a>
 							</button>
-							<button th:if="${pedido.concluido}==false">
+							<button th:if="${pedido.concluido}==false" type="button" class="btn btn-success">
 								<a th:href="@{/pedido/CRUD/finalizar(id=${pedido.id})}">Finalizar</a>
 							</button>
-						</td>
+					  </td>
+				    </tr>
+				    
+				    <tr th:if="${pedido_lista.size == 0}">
+						<td></td>
+						<td></td>
+						<td>Nenhum pedido foi confirmado</td>
+						<td></td>
+						<td></td>
 					</tr>
-				</table>
-				<table style="border: none">
-					<tr th:if="${respostaFinalizar != null}">
-						<td style="border: none" th:text="${respostaFinalizar}"></td>
-					</tr>
+				  </tbody>
 				</table>
 			</div>
 
+
+			<!-- EDIT -->
 			<div th:if="${pedido_edit != null &&!pedido_edit.concluido}">
-				<h1>Atualizar Pedido</h1>
-				<form action="@{/pedido/CRUD/atualizar}" th:action="@{/pedido/CRUD/atualizar}"
-					th:object="${pedido_edit}" method="post">
-					<fieldset>
-						<legend>Insira os valores</legend>
-						<p hidden>
-							<label for="id">Id Pedido</label>
-							<input type="number" name="id" id="id" th:value="*{id}" required />
-						</p>
-						<p>
-							<label for="cpf">CPF do Cliente</label><br />
-							<span th:each="clienteAtual:${cliente_lista}">
-								<input type="radio" name="clienteId" th:value="${clienteAtual.id}"
-									th:checked="${clienteAtual.id == pedido_edit.cliente.id}" required />
-								Nome: <span th:text="${clienteAtual.nome}"></span> | CPF: <span
-									th:text="${clienteAtual.cpf}"></span><br />
-							</span>
-						</p>
-							<p>
-							<label for="dataHora">Data do Pedido</label>
-							<input type="datetime-local" name="dataHora" id="dataHora" th:value="*{dataHora}"
-								required />
-						</p>
-						<p>
-							<label for="frete">Frete</label>
-							<input type="text" name="frete" id="frete" th:value="*{frete}" required />
-						</p>
-						<p>
-							<label for="totalPedido">Total do Pedido</label>
-							<input type="text" name="totalPedido" id="totalPedido" th:value="*{totalPedido}" required />
-						</p>
+				<h1>Atualizar pedido</h1>
 				
-						<p>
-							<button type="submit">Atualizar</button>
-						</p>
+				<form action="@{/pedido/CRUD/atualizar}" th:action="@{/pedido/CRUD/atualizar}" th:object="${pedido_edit}" method="post">
+					<fieldset>
+						<legend>Escolha o cliente do Pedido</legend>
+						
+						<div th:each="clienteAtual:${cliente_lista}" class="form-check">
+							<input class="form-check-input" type="radio" name="clienteId" th:value="${clienteAtual.id}" required>
+							<label class="form-check-label" for="clienteEscolhido">
+								<span>Nome: <i th:text="${clienteAtual.nome}"></i></span>
+								<span>CPF:  <i th:text="${clienteAtual.cpf}"></i></span>
+							</label>
+						</div>
+						<input type="hidden" name="pedidoId" id="pedidoId" th:value="*{id}" />
+
+						<div class="form-group mb-2">
+					    	<label for="dataHora">Data do Pedido</label>
+					    	<input type="datetime-local" class="form-control" name="dataHora" id="dataHora" th:value="*{dataHora}" required>
+					  	</div>
+					  	
+					  	<div class="form-group mb-2">
+					    	<label for="frete">Frete</label>
+					    	<input type="text" class="form-control" name="frete" id="frete" placeholder="Ex.: 0,0" th:value="*{frete}" required>
+					  	</div>
+					  	
+					  	<div class="form-group mb-2">
+					    	<label for="totalPedido">Total do Pedido</label>
+					    	<input type="text" class="form-control" name="totalPedido" id="totalPedido" placeholder="Ex.: 0,0" th:value="*{totalPedido}" required>
+					  	</div>
+						
+						<button type="submit" class="btn my-3 btn-primary">Atualizar</button>
 					</fieldset>
 				</form>
-
+				
 				<h2>Lista de Discos do Pedido</h2>
-				<table>
-					<tr>
-						<th>Id</th>
-						<th>Valor</th>
-						<th>Título</th>
-						<th>Interprete</th>
-						<th>Gênero</th>
-						<th>Gravadora</th>
-						<th>Tempo de Duração</th>
-						<th>Total de Músicas</th>
-					</tr>
-					<tr th:each="disco : ${disco_lista}" th:if="${disco.titulo != null}">
-						<td th:text="${disco.id}"></td>
-						<td th:text="${disco.valor}"></td>
-						<td th:text="${disco.titulo}"></td>
-						<td th:text="${disco.interprete}"></td>
-						<td th:text="${disco.genero}"></td>
-						<td th:text="${disco.gravadora}"></td>
-						<td th:text="${disco.tempoDuracao}"></td>
-						<td th:text="${disco.totalMusicas}"></td>
-						<td>
-							<button>
-								<a
-									th:href="@{/pedido/CRUD/deletarItem(id=${pedido_edit.id},titulo=${disco.titulo})}">Excluir</a>
-							</button>
-						</td>
-					</tr>
-				</table>
-				<h3>Adicionar disco</h3>
-				<form th:action="@{/pedido/CRUD/addDisco}" method="post">
-					<p hidden>
-						<label for="id">Id Pedido</label> <input type="number" name="id" id="id"
-							th:value="*{pedido_edit.id}" required />
-					</p>
-					<p>
-						<label for="titulo">Titulo:</label> <input type="text" name="titulo" id="titulo" required />
+				
+				<table class="table">
+				  <thead class="thead-dark">
+				    <tr>
+				      <th scope="col">Id</th>
+				      <th scope="col">Valor</th>
+				      <th scope="col">Título</th>
+				      <th scope="col">Interprete</th>
+				      <th scope="col">Gênero</th>
+				      <th scope="col">Gravadora</th>
+				      <th scope="col">Tempo de Duração</th>
+				      <th scope="col">Total de Músicas</th>
+				      <th scope="col"></th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="disco : ${disco_lista}" th:if="${disco.titulo != null}">
+				      <td th:text="${disco.id}"></td>
+				      <td th:text="${disco.valor}"></td>
+				      <td th:text="${disco.titulo}"></td>
+				      <td th:text="${disco.interprete}"></td>
+				      <td th:text="${disco.genero}"></td>
+				      <td th:text="${disco.gravadora}"></td>
+				      <td th:text="${disco.tempoDuracao}"></td>
+				      <td th:text="${disco.totalMusicas}"></td>
+				      <td class="btn-actions">
 
-						<button type="submit">Adicionar</button>
-					</p>
-				</form>
+							<button type="button" class="btn btn-danger">
+								<a th:href="@{/pedido/CRUD/removeDisco(discoId=${disco.id},pedidoId=${pedido_edit.id})}
+">Remover</a>
+							</button>
+					  </td>
+				    </tr>
+				    
+				    <tr th:if="${disco_lista.size == 0}">
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Nenhum disco foi registrado</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				  </tbody>
+				</table>
+				
+				<h3>Adicionar disco</h3>
+				
+			<nav class="navbar navbar-light bg-light">
+                    <form class="form-inline d-flex ps-2" th:action="@{/pedido/CRUD/addDisco}" th:object="${pedido_edit}" method="post">
+<input type="hidden" name="pedidoId" id="pedidoId" th:value="*{id}" />
+
+                        <input class="form-control mr-sm-2" type="text" name="titulo" id="titulo" required placeholder="Título do disco..." aria-label="Search">
+                        <button class="btn btn-outline-success ms-3 my-2 my-sm-0" type="submit">Adicionar</button>
+                    </form>
+                </nav>
 			</div>
 		</main>
 	</div>

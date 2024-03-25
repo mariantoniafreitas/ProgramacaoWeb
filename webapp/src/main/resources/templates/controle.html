@@ -106,6 +106,8 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
   <link th:href="@{css/dashboard.css}" rel="stylesheet">
+  
+  <link rel="stylesheet" th:href="@{/css/toolbar-dropdown.css}">
 </head>
 
 <body>
@@ -129,6 +131,7 @@
     </symbol>
   </svg>
 
+  <!-- Ícones -->
   <div th:fragment="icones">
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
       <symbol id="calendar3" viewBox="0 0 16 16">
@@ -178,47 +181,72 @@
       </symbol>
     </svg>
   </div>
+  
+  <!-- Header -->
   <div th:fragment="header">
-    <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-5  text-white" th:href="@{~/.}">Loja de discos</a>
-
-      <ul class="navbar-nav flex-row d-md-none">
-        <li class="nav-item text-nowrap">
-          <button class="nav-link px-3 text-white" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false"
-            aria-label="Toggle search">
-          </button>
-        </li>
-        <li class="nav-item text-nowrap">
-          <button class="nav-link px-3 text-white" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
-            aria-label="Toggle navigation">
-          </button>
-        </li>
-      </ul>
+    <header class="navbar sticky-top bg-dark flex-md-nowrap shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 px-5 text-white" th:href="@{~/.}">Loja de discos</a>
+      
+      <div class="d-flex col-4 justify-content-between">
+		  <div class="dropdown">
+			  <button class="btn dropdown-link btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+			    Disco
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+			    <li><a class="dropdown-item" th:href="@{~/./disco/addForm}">Adicionar</a></li>
+			    <li><a class="dropdown-item" th:href="@{~/./disco/listarDiscos}">Listar</a></li>
+			  </ul>
+		  </div>
+		  
+		  <div class="dropdown">
+			  <button class="btn dropdown-link btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+			    Pedido
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+			    <li><a class="dropdown-item" th:href="@{~/./pedido/CRUD/addForm}">Adicionar</a></li>
+			    <li><a class="dropdown-item" th:href="@{~/./pedido/CRUD/listarPedidos}">Listar</a></li>
+			  </ul>
+		  </div>
+		  
+		  <div class="dropdown">
+			  <button class="btn dropdown-link btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+			    Cliente
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+			    <li><a class="dropdown-item" th:href="@{~/./cliente/CRUD/addForm}">Adicionar</a></li>
+			    <li><a class="dropdown-item" th:href="@{~/./cliente/CRUD/listarClientes}">Listar</a></li>
+			  </ul>
+		  </div>
+	
+	
+		  <div class="dropdown">
+			  <button class="btn dropdown-link btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
+			    Funcionário
+			  </button>
+			  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
+			    <li><a class="dropdown-item" th:href="@{~/./funcionario/CRUD/addForm}">Adicionar</a></li>
+			    <li><a class="dropdown-item" th:href="@{~/./funcionario/CRUD/listarFuncionarios}">Listar</a></li>
+			  </ul>
+		  </div>
+	  </div>
+  	</header>
   </div>
+  
   <div id="navbarSearch" class="navbar-search w-100 collapse">
     <input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
   </div>
-  </header>
+
   <div class="container-fluid">
     <div class="row">
-      <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-        <div class="offcanvas-lg offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu"
-          aria-labelledby="sidebarMenuLabel">
-          <div class="offcanvas-header">
-
-            <h5 class="offcanvas-title" id="sidebarMenuLabel">Company name</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu"
-              aria-label="Close"></button>
-          </div>
-          <div th:fragment="sidebar" class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
-
+      <div class="sidebar border border-right col-md-3 col-lg-2 bg-body-tertiary">
+        <div class="offcanvas-lg offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+          
+          <!-- Menu lateral -->
+          <div th:fragment="sidebar" class="offcanvas-body d-md-flex flex-column pt-lg-3 overflow-y-auto">
             <ul class="nav flex-column">
-
               <li class="nav-item">
                 <span class="nav-link d-flex align-items-center gap-2" href="@{~/./disco}">
-                  discos
+                  Discos
                 </span>
               </li>
               <li>
@@ -284,6 +312,7 @@
         </div>
       </div>
     </div>
+ </div>
     <script th:src="@{js/bootstrap.bundle.min.js}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"

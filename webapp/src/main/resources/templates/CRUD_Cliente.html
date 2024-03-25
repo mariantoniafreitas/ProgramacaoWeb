@@ -5,203 +5,203 @@
 	<meta charset="UTF-8">
 	<div th:replace="~{controle :: import}"></div>
 	<title>CRUD Cliente</title>
+	<link rel="stylesheet" th:href="@{/css/CRUD_page.css}">
+	<link rel="stylesheet" th:href="@{/css/toolbar-dropdown.css}">
 </head>
-<style>
-	table,
-	th,
-	td {
-		border: 1px solid black;
-		text-align: center;
-	}
-</style>
 
 <body>
-
+	<!-- Header -->
 	<div th:replace="~{controle :: header}"></div>
-	<div class="row">
-		<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-
-
-			<div th:replace="~{controle :: sidebar}"></div>
-			<div th:replace="~{controle :: icones}"></div>
-
-		</div>
-		<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+	
+	<div class="row mx-0">
+		<main class="col-12 px-md-4">
+			<!-- ADD -->
 			<div th:if="${cliente_add != null}">
 				<script th:inline="javascript">
 					document.addEventListener('DOMContentLoaded', function () {
 						document.getElementById('cpfAdd').value = '';
 					});
 				</script>
+				
 				<h1>Registrar Cliente</h1>
+				
 				<form action="#" th:action="@{/cliente/CRUD/add}" th:object="${cliente_add}" method="post">
-					<fieldset>
-						<legend>Insira os valores</legend>
-						<p>
-							<label for="login">Login</label>
-							<input type="text" name="login" id="login" required />
-						</p>
-						<p>
-							<label for="senha">Senha</label>
-							<input type="text" name="senha" id="senha" required />
-						</p>
-						<p>
-							<label for="nome">Nome</label> <input type="text" name="nome" id="nome" th:field="*{nome}"
-								required />
-						</p>
-						<p>
-							<label for="email">Email</label> <input type="email" name="email" id="email"
-								th:field="*{email}" required />
-						</p>
-						<p>
-							<label for="cpf">CPF</label> <input type="text" name="cpf" id="cpfAdd" th:field="*{cpf}"
-								pattern="\d{11}" placeholder="00000000000" required />
-						</p>
-						<p>
-							<label for="telefone">Telefone</label> <input type="tel" name="telefone" th:field="*{tel}" pattern="\d{9,11}"
-								placeholder="0000000000" id="tel" required />
-						</p>
-						<p>
-							<label for="endereco">Endereço</label> <input type="text" name="endereco" id="endereco" th:field="*{endereco}"
-								required />
-						</p>
-						<p>
-							<label for="dataNascimento">Data de Nascimento</label> <input type="text" name="dataNascimento" id="dataNascimento" th:field="*{dataNascimento}"
-								required />
-						</p>
-						<p>
-							<button type="submit">Registrar</button>
-						</p>
-					</fieldset>
+					<div class="form-group mb-2">
+				    	<label for="login">Login</label>
+				    	<input type="text" class="form-control" name="login" id="login" placeholder="Ex.: Maria José" required>
+				    	<small id="loginHelp" class="form-text text-warning">Campo único.</small>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="senha">Senha</label>
+				    	<input type="password" class="form-control" name="senha" id="senha" placeholder="Ex.: 123456" required>
+				  		<small id="senhaHelp" class="form-text text-muted">Deve conter entre 6 e 20 caracteres.</small>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="nome">Nome</label>
+				    	<input type="text" class="form-control" name="nome" id="nome" placeholder="Ex.: Maria José" th:field="*{nome}" required>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="email">Email</label>
+				    	<input type="email" class="form-control" name="email" id="email" placeholder="Ex.: maria@gmail.com" th:field="*{email}" required>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="cpf">CPF</label>
+				    	<input type="text" class="form-control" name="cpf" id="cpfAdd" pattern="\d{11}" placeholder="Ex.: 0000000000" th:field="*{cpf}" required>
+				  		<small id="cpfHelp" class="form-text text-warning">Campo único.</small>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="telefone">Telefone</label>
+				    	<input type="text" class="form-control" name="telefone" id="tel" pattern="\d{9,11}" placeholder="Ex.: 00000000000" th:field="*{tel}" required>
+				  		<small id="telefoneHelp" class="form-text text-warning">Campo único.</small>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="endereco">Endereço</label>
+				    	<input type="text" class="form-control" name="endereco" id="endereco" placeholder="Ex.: Rua Maria José" th:field="*{endereco}" required>
+				  		<small id="senhaHelp" class="form-text text-muted">Deve conter entre 20 e 100 caracteres.</small>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="dataNascimento">Data de Nascimento</label>
+				    	<input type="text" class="form-control" name="dataNascimento" id="dataNascimento" placeholder="Ex.: ddMMYYYY" th:field="*{dataNascimento}" required>
+				  	</div>
+				  	
+				  	<button type="submit" class="btn my-3 btn-primary">Registrar</button>
 				</form>
 				<div th:if="${respostaAdd != null}">
 					<span th:text="${respostaAdd}"></span>
 				</div>
-
 			</div>
+			
 
+			<!-- LIST -->
 			<div th:if="${cliente_lista != null}">
-				<h2>Buscar Cliente</h2>
-				<form th:action="@{/cliente/CRUD/buscaCPF}" method="post">
-					<p>
-						<label for="cpf">CPF</label> <input type="text" name="cpf" id="cpf" required />
-
-						<button type="submit">Buscar</button>
-					</p>
-				</form>
-
-				<h1>Lista de Clientes</h1>
-				<table>
-					<tr>
-						<th>Id</th>
-						<th>Login</th>
-						<th>Senha</th>
-						<th>Nome</th>
-						<th>Email</th>
-						<th>CPF</th>
-						<th>Telefone</th>
-						<th>Endereço</th>
-						<th>Data de Nascimento</th>
-					</tr>
-					<tr th:each="cliente : ${cliente_lista}" th:if="${cliente.cpf != null}">
-						<td th:text="${cliente.id}"></td>
-						<td th:text="${cliente.usuario.login}"></td>
-						<td th:text="${cliente.usuario.senha}"></td>
-						<td th:text="${cliente.nome}"></td>
-						<td th:text="${cliente.email}"></td>
-						<td th:text="${cliente.cpf}"></td>
-						<td th:text="${cliente.tel}"></td>
-						<td th:text="${cliente.endereco}"></td>
-						<td th:text="${cliente.dataNascimento}"></td>
-						<td>
-							<button>
+				<h2>Buscar cliente</h2>
+				
+				<nav class="navbar navbar-light bg-light">
+				  <form class="form-inline d-flex ps-2" th:action="@{/cliente/CRUD/buscaCPF}" method="post">
+				    <input class="form-control mr-sm-2" type="text" name="cpf" id="cpf" required placeholder="CPF do cliente..." aria-label="Search">
+				    <button class="btn btn-outline-success ms-3 my-2 my-sm-0" type="submit">Buscar</button>
+				  </form>
+				</nav>
+				
+				<h1 class="mt-4">Lista de clientes</h1>
+				
+				<table class="table">
+				  <thead class="thead-dark">
+				    <tr>
+				      <th scope="col">Id</th>
+				      <th scope="col">Login</th>
+				      <th scope="col">Senha</th>
+				      <th scope="col">Nome</th>
+				      <th scope="col">Email</th>
+				      <th scope="col">CPF</th>
+				      <th scope="col">Telefone</th>
+				      <th scope="col">Endereço</th>
+				      <th scope="col">Data de Nascimento</th>
+				      <th scope="col"></th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr th:each="cliente : ${cliente_lista}" th:if="${cliente.cpf != null}">
+				      <td th:text="${cliente.id}"></td>
+				      <td th:text="${cliente.usuario.login}"></td>
+				      <td th:text="${cliente.usuario.senha}"></td>
+				      <td th:text="${cliente.nome}"></td>
+				      <td th:text="${cliente.email}"></td>
+				      <td th:text="${cliente.cpf}"></td>
+				      <td th:text="${cliente.tel}"></td>
+				      <td th:text="${cliente.endereco}"></td>
+				      <td th:text="${cliente.dataNascimento}"></td>
+				      <td class="btn-actions">
+						  <button type="button" class="btn btn-warning">
 								<a th:href="@{/cliente/CRUD/editar(id=${cliente.id})}">Editar</a>
 							</button>
-							<button>
-								<a th:href="@{/cliente/CRUD/deletePorCPF(cpf=${cliente.cpf})}">Excluir</a>
+							<button type="button" class="btn btn-danger">
+								<a th:href="@{/cliente/CRUD/deletePorId(id=${cliente.id})}">Excluir</a>
 							</button>
-						</td>
+					  </td>
+				    </tr>
+				    
+				    <tr th:if="${cliente_lista.size == 0}">
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Nenhum cliente foi registrado</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
 					</tr>
+				  </tbody>
 				</table>
 			</div>
 
+
+			<!-- EDIT -->
 			<div th:if="${cliente_edit != null}">
 				<script th:inline="javascript">
 					document.addEventListener('DOMContentLoaded', function () {
 						document.getElementById('telefoneAdd').value = '';
 					});
 				</script>
-				<h1>Atualizar Cliente</h1>
+				
+				<h1>Atualizar cliente</h1>
+				
 				<form action="#" th:action="@{/cliente/CRUD/atualizar}" th:object="${cliente_edit}" method="post">
-					<fieldset>
-						<legend>Insira os valores</legend>
-						<p>
-							<label for="login">Login</label>
-							<input type="text" name="login" id="login" required />
-						</p>
-						<p>
-							<label for="senha">Senha</label>
-							<input type="text" name="senha" id="senha" required />
-						</p>
-						<p>
-							<label for="nome">Nome</label> <input type="text" name="nome" id="nome" th:field="*{nome}"
-								required />
-						</p>
-						<p>
-							<label for="email">Email</label> <input type="email" name="email" id="email"
-								th:field="*{email}" required />
-						</p>
-						<p>
-							<label for="cpf">CPF</label> <input type="text" name="cpf" id="cpfAdd" th:field="*{cpf}"
-								pattern="\d{11}" placeholder="00000000000" required />
-						</p>
-						<p>
-							<label for="telefone">Telefone</label> <input type="tel" name="telefone" th:field="*{tel}" pattern="\d{9,11}"
-								placeholder="0000000000" id="tel" required />
-						</p>
-						<p>
-							<label for="endereco">Endereço</label> <input type="text" name="endereco" id="endereco" th:field="*{endereco}"
-								required />
-						</p>
-						<p>
-							<label for="dataNascimento">Data de Nascimento</label> <input type="text" name="dataNascimento" id="dataNascimento" th:field="*{dataNascimento}"
-								required />
-						</p>
-						<p>
-							<button type="submit">Atualizar</button>
-						</p>
-
-					</fieldset>
-				</form>
-
-				<h2>Lista de Telefones</h2>
-				<table>
-					<tr>
-						<th>Telefones</th>
-					</tr>
-					<tr th:each="telefone : ${telefone_lista}">
-						<td th:text="${telefone}"></td>
-						<td>
-							<button>
-								<a
-									th:href="@{/cliente/CRUD/removeTelefone(cpf=${cliente_edit.cpf},telefone=${telefone})}">Excluir</a>
-							</button>
-						</td>
-					</tr>
-				</table>
-
-				<h2>Adicionar Telefone</h2>
-				<form th:action="@{/cliente/CRUD/addTelefone}" method="post" th:object="${cliente_edit}">
-					<p hidden>
-						<input type="text" name="cpf" id="cpf" th:value="*{cliente_edit.cpf}" required />
-					</p>
-					<p>
-						<label for="telefone">Telefone:</label> <input type="tel" name="telefone"
-							th:field="*{cliente_edit.telefones[0]}" id="telefoneAdd" pattern="\d{9,11}"
-							placeholder="0000000000" required />
-
-						<button type="submit">Adicionar</button>
-					</p>
+					<div class="form-group mb-2">
+				    	<label for="login">Login</label>
+				    	<input type="text" class="form-control" name="login" id="login" placeholder="Ex.: Maria José" required>
+				    	<small id="loginHelp" class="form-text text-warning">Campo único.</small>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="senha">Senha</label>
+				    	<input type="password" class="form-control" name="senha" id="senha" placeholder="Ex.: 123456" required>
+				  		<small id="senhaHelp" class="form-text text-muted">Deve conter entre 6 e 20 caracteres.</small>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="nome">Nome</label>
+				    	<input type="text" class="form-control" name="nome" id="nome" placeholder="Ex.: Maria José" th:field="*{nome}" required>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="email">Email</label>
+				    	<input type="email" class="form-control" name="email" id="email" placeholder="Ex.: maria@gmail.com" th:field="*{email}" required>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="cpf">CPF</label>
+				    	<input type="text" class="form-control" name="cpf" id="cpfAdd" pattern="\d{11}" placeholder="Ex.: 0000000000" th:field="*{cpf}" required>
+				  		<small id="cpfHelp" class="form-text text-warning">Campo único.</small>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="telefone">Telefone</label>
+				    	<input type="text" class="form-control" name="telefone" id="tel" pattern="\d{9,11}" placeholder="Ex.: 00000000000" th:field="*{tel}" required>
+				  		<small id="telefoneHelp" class="form-text text-warning">Campo único.</small>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="endereco">Endereço</label>
+				    	<input type="text" class="form-control" name="endereco" id="endereco" placeholder="Rua Exemplo, 123" th:field="*{endereco}" required>
+				  		<small id="senhaHelp" class="form-text text-muted">Deve conter entre 20 e 100 caracteres.</small>
+				  	</div>
+				  	
+				  	<div class="form-group mb-2">
+				    	<label for="dataNascimento">Data de Nascimento</label>
+				    	<input type="text" class="form-control" name="dataNascimento" id="dataNascimento" placeholder="Ex.: ddMMYYYY" th:field="*{dataNascimento}" required>
+				  	</div>
+				  	
+				  	<button type="submit" class="btn my-3 btn-primary">Atualizar</button>
 				</form>
 			</div>
 		</main>

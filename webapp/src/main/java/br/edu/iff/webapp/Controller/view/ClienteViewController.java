@@ -98,19 +98,22 @@ public class ClienteViewController {
 			model.addAttribute("mensagemErro", resultado.getAllErrors());
 			return "error";
 		} else {
+			System.out.println(nome);
+			System.out.println(cpf);
 			clienteService.atualizarCliente(clienteService.buscarClienteCPF(cpf).getId(), nome, email, cpf, tel,
 					endereco, dataNascimento);
+			
 			if (!login.isEmpty() || !senha.isEmpty()) {
 				usuarioService.atualizarUsuario(clienteService.buscarClienteCPF(cpf).getUsuario().getId(), login, senha,
 						0);
 			}
 		}
-		return "CRUD_Cliente";
+		return "redirect:/cliente/CRUD/listarClientes";
 	}
 
-	@GetMapping("/CRUD/deletePorCPF")
-	public String deletarClienteCPF(String cpf) throws Exception {
-		clienteService.deletarCliente(clienteService.buscarClienteCPF(cpf).getId());
+	@GetMapping("/CRUD/deletePorId")
+	public String deletarClienteId(@RequestParam Long id) throws Exception {
+		clienteService.deletarCliente(id);
 		return "redirect:/cliente/CRUD/listarClientes";
 	}
 
